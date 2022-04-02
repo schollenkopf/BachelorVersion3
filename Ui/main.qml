@@ -13,9 +13,7 @@ ApplicationWindow {
     //Qt.FramelessWindowHint |
     flags:  Qt.Window
     property string nextmerge: "Loading"
-    property QtObject button_yes
-    property QtObject button_no
-    property QtObject backend
+    property QtObject yes_no_button
     Rectangle {
         anchors.fill: parent
         color: "#131424"
@@ -44,7 +42,7 @@ ApplicationWindow {
                 width: 100
                 height: 50
                 text: "YES"
-                onClicked: button_yes.yes()
+                onClicked: yes_no_button.yes()
                 
                                 
             }
@@ -58,7 +56,7 @@ ApplicationWindow {
                 width: 100
                 height: 50
                 text: "NO"
-                onClicked: button_no.no()
+                onClicked: yes_no_button.no()
             }
         
         }
@@ -67,7 +65,7 @@ ApplicationWindow {
         
     }
     Connections {
-        target: backend
+        target: yes_no_button
         function onUpdated(msg) {
             nextmerge = msg;
         }
