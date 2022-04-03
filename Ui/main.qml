@@ -25,6 +25,63 @@ ApplicationWindow {
                 font.pixelSize: 30
                 color: "white"
             }
+            Rectangle {
+            id: frame
+            clip: true
+            width: 160
+            height: 80
+            border.color: "black"
+            anchors.centerIn: parent
+            
+            
+            
+
+            ListView {
+                anchors.fill: parent
+                model: ListModel {
+                            ListElement {
+                                name: "Bill Smith"
+                                number: "555 3264"
+                            }
+                            ListElement {
+                                name: "John Brown"
+                                number: "555 8426"
+                            }
+                            ListElement {
+                                name: "Sam Wise"
+                                number: "555 0473"
+                            }
+                        }
+                flickableDirection: Flickable.VerticalFlick
+                boundsBehavior: Flickable.StopAtBounds
+                delegate: Item {
+                    width: 160; height: 40
+                    Column {
+                        Text { text: '<b>Name:</b> ' + name }
+                        Text { text: '<b>Number:</b> ' + number }
+                    }
+                }
+                highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
+                focus: true
+                ScrollBar.vertical: vbar
+                
+            }
+
+            
+
+            ScrollBar {
+                id: vbar
+                hoverEnabled: true
+                active: hovered || pressed
+                orientation: Qt.Vertical
+                size: frame.height / content.height
+                anchors.top: parent.top
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+            }
+
+            
+        }
         Row {
             anchors {
                     bottom: parent.bottom
@@ -60,6 +117,7 @@ ApplicationWindow {
             }
         
         }
+        
         
         
         

@@ -5,6 +5,7 @@ from PyQt6.QtCore import QObject, QThread, pyqtSignal
 
 from abstraction_control import AbstractionControl
 
+
 class YesNoButtons(QObject):
 
     def __init__(self, abstraction_control):
@@ -12,7 +13,6 @@ class YesNoButtons(QObject):
         self.abstraction_control = abstraction_control
         self.thread = None
         self.worker = None
-
 
     updated = pyqtSignal(str, arguments=['updater'])
 
@@ -33,7 +33,6 @@ class YesNoButtons(QObject):
         self.thread.finished.connect(
             lambda: self.updater(self.abstraction_control.get_message())
         )
-        
 
     @pyqtSlot()
     def no(self):
@@ -46,14 +45,14 @@ class Worker(QObject):
     def __init__(self, abstraction_control):
         QObject.__init__(self)
         self.abstraction_control = abstraction_control
-        
 
     finished = pyqtSignal()
-    progress = pyqtSignal(int) #We could implement
+    # progress = pyqtSignal(int) We could implement
 
     def run(self):
         self.abstraction_control.yes()
         self.finished.emit()
+
 
 class Window(QQmlApplicationEngine):
     def __init__(self, app, parent=None):
@@ -69,5 +68,3 @@ class Window(QQmlApplicationEngine):
         self.quit.connect(self.app.quit)
         self.rootObjects()[0].setProperty('yes_no_button', self.yes_no_button)
         self.yes_no_button.updater(self.abstraction_control.get_message())
-
-    
