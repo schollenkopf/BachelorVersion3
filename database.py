@@ -1,6 +1,7 @@
 import pandas as pd
 from neo4j import GraphDatabase
 from pathlib import Path
+from PySide6.QtCore import QThread
 
 
 class Database:
@@ -16,10 +17,10 @@ class Database:
         with self.driver.session() as session:
             session.run("Match (n) Detach Delete (n)")
 
-
     def update_latest_log(self, data):
         if self.level_of_abstraction >= 0:
-            path_file = Path(__file__).parent / f"abstractions/Abstraction{self.level_of_abstraction}.csv"
+            path_file = Path(
+                __file__).parent / f"abstractions/Abstraction{self.level_of_abstraction}.csv"
             data.to_csv(path_file)
         self.latest_log = data
         self.level_of_abstraction += 1
@@ -29,6 +30,8 @@ class Database:
         return self.latest_log
 
     def get_actions(self):
+        print("getting actions", QThread.currentThread().objectName())
+
         return list(self.latest_log[self.latest_log.columns[self.action_column]].unique())
 
     def get_action_column(self):
@@ -45,7 +48,6 @@ class Database:
 
     def get_traces(self):
         return list(self.latest_log[self.latest_log.columns[self.trace_column]].unique())
-        
 
     def change_event(self, row_number, column_number, new_value):
         self.latest_log.at[row_number,

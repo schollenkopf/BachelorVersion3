@@ -14,21 +14,53 @@ Window {
         id:mainRow
         anchors.fill: parent
 
-        Rectangle {
-
-            id: leftColumnRectangle
+        Column {
+            id: processmodelcolumn
             anchors{
-                top:mainRow.top
-                bottom:mainRow.bottom
-            }
-            width: 600
-            Image {
-                id: processModel
-                anchors.fill: parent
-                source: "abstractions_process_models/Abstraction0.png"
+                    top:mainRow.top
+                    bottom:mainRow.bottom
+                }
+                width: 600
+
+            Rectangle {
+                height: 100
+                id: sliderRectangle
+                anchors{
+                    left:processmodelcolumn.left
+                    right:processmodelcolumn.right
+                }
+
+                Slider {
+                        snapMode: Slider.SnapOnRelease
+                        id: slider
+                        anchors.fill: parent
+                        from: 0
+                        value: 0
+                        to: 1
+                        stepSize: 1
+                    }
+
             }
 
+
+            Rectangle {
+
+                height: 800
+                id: leftColumnRectangle
+                anchors{
+                    left:processmodelcolumn.left
+                    right:processmodelcolumn.right
+                }
+                
+                Image {
+                    id: processModel
+                    anchors.fill: parent
+                    source: "abstractions_process_models/Abstraction"+slider.value+".png"
+                }
+
+            }
         }
+        
 
         Rectangle {
 
@@ -164,12 +196,14 @@ Window {
 
     Connections {
         target: candidate_controller
-        function onUpdated(l, len, process_model_string) {
+        function onUpdated(l, len, process_model_string,abstraction_level) {
             console.log(len + 1)
             list.model.insertRows(0, len, l);
             vbar.size = listRectangle.height / ((list.model.rowCount()) * 40);
-            processModel.source =   process_model_string;
+            //processModel.source =   process_model_string;
             bi.running = false
+            slider.to = abstraction_level
+            slider.value = abstraction_level
         }
     }
 

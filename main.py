@@ -15,7 +15,7 @@ if __name__ == "__main__":
 import sys
 from pathlib import Path
 
-from PySide6.QtCore import QUrl
+from PySide6.QtCore import QUrl, QThread
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 
@@ -37,7 +37,8 @@ if __name__ == "__main__":
     context.setContextProperty('candidate_controller', candidate_controller)
 
     engine.load(QUrl.fromLocalFile(qml_file))
-
+    QThread.currentThread().setObjectName("MAIN")
+    print("main app:", QThread.currentThread())
     candidate_controller.updater()
 
     if not engine.rootObjects():

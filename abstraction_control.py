@@ -6,12 +6,15 @@ from log_processor import LogProcessor
 from predictor import Predictor
 from time_distance_median import TimeDistanceMedian
 from time_distance_stdev import TimeDistanceStdev
+from PySide6.QtCore import QThread
+
 
 class AbstractionControl():
-    
+
     def __init__(self) -> None:
         self.csv_reader = CSVReader()
-        self.database = Database(5, 0, 3, "bolt://localhost:7687", "neo4j", "password")
+        self.database = Database(
+            5, 0, 3, "bolt://localhost:7687", "neo4j", "password")
         self.metrics = []
         self.predictor = None
         self.log_processor = None
@@ -23,9 +26,9 @@ class AbstractionControl():
 
         self.setUp()
 
-
     def setUp(self):
-        data = self.csv_reader.read_data("Data.csv", "%Y-%m-%dT%H:%M:%S.%f",  6, 8114, ";", 3, 26)
+        data = self.csv_reader.read_data(
+            "Data.csv", "%Y-%m-%dT%H:%M:%S.%f",  6, 8114, ";", 3, 26)
         self.database.update_latest_log(data)
         self.database.initiate_tree()
         self.log_processor = LogProcessor(self.database)
@@ -37,14 +40,14 @@ class AbstractionControl():
         print("Saving Process Model Abstraction 0")
         self.get_new_prediction()
 
-
     def get_new_prediction(self):
         self.predictor.predict_sum()
         self.sorted_pair_array, self.sorted_pair_labels = self.predictor.sort_results()
-        
+
     def abstract(self):
         self.level_of_abstraction += 1
         set_of_actions = self.database.get_actions()
+
         e1 = set_of_actions[self.sorted_pair_labels[0, self.pair_we_are_at]]
         e2 = set_of_actions[self.sorted_pair_labels[1, self.pair_we_are_at]]
         nr_events_abstracted = self.log_processor.abstract_log(e1, e2, e1 + e2)
@@ -53,13 +56,17 @@ class AbstractionControl():
         print(f"Merging {e1} and {e2}")
         print(f"Abstracted {nr_events_abstracted} Events")
         print(f"Now you only have {len(self.database.get_actions())} actions")
-        print( f"{self.database.events_deleted_last_abstraction} have been deleted")
+        print(f"{self.database.events_deleted_last_abstraction} have been deleted")
 
         self.database.update_tree(e1, e2, e1 + e2)
+        print("1", QThread.currentThread().objectName())
         self.heuristic_miner.save_process_as_png(self.level_of_abstraction)
+        print("2", QThread.currentThread().objectName())
         self.get_new_prediction()
+        print("3", QThread.currentThread().objectName())
         self.pair_we_are_at = 0
-    
+        print("4", QThread.currentThread().objectName())
+
     def get_sorted_pair_labels(self):
         set_of_actions = self.database.get_actions()
         return [(set_of_actions[self.sorted_pair_labels[0, n]], set_of_actions[self.sorted_pair_labels[1, n]]) for n in range(len(self.sorted_pair_labels[0, :]))]
@@ -68,7 +75,8 @@ class AbstractionControl():
         time_distance_stdev = TimeDistanceStdev(self.database)
         time_distance_median = TimeDistanceMedian(self.database)
         directly_follows = DirectlyFollowsMetric(self.database, False)
-        self.metrics = [directly_follows, time_distance_median, time_distance_stdev]
+        self.metrics = [directly_follows,
+                        time_distance_median, time_distance_stdev]
 
     def set_pair_we_are_at(self, i):
         self.pair_we_are_at = i
