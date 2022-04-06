@@ -25,8 +25,7 @@ class AbstractionControl():
 
 
     def setUp(self):
-        data = self.csv_reader.read_data(
-            "Data.csv", "%Y-%m-%dT%H:%M:%S.%f",  6, 8114, ";", 3, 26)
+        data = self.csv_reader.read_data("Data.csv", "%Y-%m-%dT%H:%M:%S.%f",  6, 8114, ";", 3, 26)
         self.database.update_latest_log(data)
         self.database.initiate_tree()
         self.log_processor = LogProcessor(self.database)
@@ -42,41 +41,37 @@ class AbstractionControl():
     def get_new_prediction(self):
         self.predictor.predict_sum()
         self.sorted_pair_array, self.sorted_pair_labels = self.predictor.sort_results()
-        self.redefine_e1_e2()
         
-    def yes(self):
+    def abstract(self):
         self.level_of_abstraction += 1
-        nr_events_abstracted = self.log_processor.abstract_log(self.e1, self.e2, self.e1 +self.e2)
+        set_of_actions = self.database.get_actions()
+        e1 = set_of_actions[self.sorted_pair_labels[0, self.pair_we_are_at]]
+        e2 = set_of_actions[self.sorted_pair_labels[1, self.pair_we_are_at]]
+        nr_events_abstracted = self.log_processor.abstract_log(e1, e2, e1 + e2)
         self.log_processor.delete_repetitions()
 
-        print("Abstracted {} Events".format(nr_events_abstracted))
-        print(
-            f"Now you only have {len(self.database.get_actions())} actions")
-        print(
-            f"{self.database.events_deleted_last_abstraction} have been deleted")
+        print(f"Merging {e1} and {e2}")
+        print(f"Abstracted {nr_events_abstracted} Events")
+        print(f"Now you only have {len(self.database.get_actions())} actions")
+        print( f"{self.database.events_deleted_last_abstraction} have been deleted")
 
-        self.database.update_tree(self.e1, self.e2, self.e1+self.e2)
+        self.database.update_tree(e1, e2, e1 + e2)
         self.heuristic_miner.save_process_as_png(self.level_of_abstraction)
         self.get_new_prediction()
         self.pair_we_are_at = 0
-        
-    def no(self):
-        self.pair_we_are_at += 1
-        self.redefine_e1_e2()
-
-    def redefine_e1_e2(self):
+    
+    def get_sorted_pair_labels(self):
         set_of_actions = self.database.get_actions()
-        self.e1 = set_of_actions[self.sorted_pair_labels[0, self.pair_we_are_at]]
-        self.e2 = set_of_actions[self.sorted_pair_labels[1, self.pair_we_are_at]]
-
-    def get_message(self):
-        return f"Do you want to abstract:{self.e1} AND {self.e2} \n The time distance between them is: {self.sorted_pair_array[self.pair_we_are_at]}"
+        return [(set_of_actions[self.sorted_pair_labels[0, n]], set_of_actions[self.sorted_pair_labels[1, n]]) for n in range(len(self.sorted_pair_labels[0, :]))]
 
     def add_metrics(self):
         time_distance_stdev = TimeDistanceStdev(self.database)
         time_distance_median = TimeDistanceMedian(self.database)
         directly_follows = DirectlyFollowsMetric(self.database, False)
         self.metrics = [directly_follows, time_distance_median, time_distance_stdev]
+
+    def set_pair_we_are_at(self, i):
+        self.pair_we_are_at = i
 
     """
     data = csv_reader.read_data(

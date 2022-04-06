@@ -1,12 +1,14 @@
 import datetime
 from matplotlib.pyplot import axes
 import pandas as pd
+from pathlib import Path
 
 class CSVReader:
     
         
     def read_data(self, filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp):
-        data = pd.read_csv(filename, separator, usecols=range(number_columns), nrows=number_rows)
+        path_file = Path(__file__).parent / filename
+        data = pd.read_csv(path_file, sep=separator, usecols=range(number_columns), nrows=number_rows)
         for n, event in enumerate(data.values):
             data.at[n,data.columns[timestamp_column]] = self.convert_to_seconds(event[timestamp_column], time_string, number_chars_timestamp)
         

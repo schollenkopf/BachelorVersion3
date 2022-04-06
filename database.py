@@ -1,5 +1,6 @@
 import pandas as pd
 from neo4j import GraphDatabase
+from pathlib import Path
 
 
 class Database:
@@ -18,8 +19,8 @@ class Database:
 
     def update_latest_log(self, data):
         if self.level_of_abstraction >= 0:
-            data.to_csv(
-                f"abstractions/Abstraction{self.level_of_abstraction}.csv")
+            path_file = Path(__file__).parent / f"abstractions/Abstraction{self.level_of_abstraction}.csv"
+            data.to_csv(path_file)
         self.latest_log = data
         self.level_of_abstraction += 1
         self.latest_log = self.latest_log.reset_index(drop=True)
