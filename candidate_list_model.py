@@ -1,10 +1,11 @@
 from PySide6.QtCore import (QAbstractListModel, QModelIndex, Qt, Slot)
+"""
 from PySide6.QtQml import QmlElement
 
 QML_IMPORT_NAME = "CandidateListModel"
 QML_IMPORT_MAJOR_VERSION = 1
 
-@QmlElement
+@QmlElement"""
 class CandidateListModel(QAbstractListModel):
 
     def __init__(self, parent=None):

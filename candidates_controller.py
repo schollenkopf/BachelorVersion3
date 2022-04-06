@@ -8,12 +8,13 @@ class CandidateController(QObject):
         self.thread = None
         self.worker = None
 
-    updated = Signal(list, int)
+    updated = Signal(list, int, str)
 
     def updater(self):
         candidates = self.abstraction_controller.get_sorted_pair_labels()
+        process_model_string = f"abstractions_process_models/Abstraction{self.abstraction_controller.level_of_abstraction}.png"
         print("Update new Candidates")
-        self.updated.emit(candidates, len(candidates) - 1)
+        self.updated.emit(candidates, len(candidates) - 1, process_model_string)
 
     @Slot(int)
     def candidateSelected(self, candidate_index):

@@ -22,3 +22,4 @@ class HeuristicMiner():
         gviz = hn_visualizer.apply(heu_net)
         path_file = Path(__file__).parent / f"abstractions_process_models/Abstraction{str(level_of_abstraction)}.png"
         hn_visualizer.save(gviz, path_file)
+       
