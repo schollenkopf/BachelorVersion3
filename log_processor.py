@@ -29,7 +29,6 @@ class LogProcessor:
 
     def delete_repetitions(self):
         # keeps the mean time of the
-        print("delete reps", QThread.currentThread().objectName())
         rawdata = self.database.get_latest_log()
         ids_to_delete = []
         rawdata_values = rawdata.values

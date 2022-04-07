@@ -1,4 +1,6 @@
 import numpy as np
+
+
 class Predictor:
 
     def __init__(self, list_of_metrics, database):
@@ -6,7 +8,6 @@ class Predictor:
         self.metrics = list_of_metrics
         self.hyperparameters = self.init_hyperparameters()
         self.weighted_result = None
-
 
     def init_hyperparameters(self):
         hyperparameters = {}
@@ -16,8 +17,8 @@ class Predictor:
             hyperparameters.update({metric_name: initial_value})
         return hyperparameters
 
-    def change_hyperparameters(self,metric_name,new_value):
-        self.hyperparameters.update(metric_name,new_value)
+    def change_hyperparameter(self, metric_name, new_value):
+        self.hyperparameters.update({metric_name: new_value})
 
     def adjust_prediction(self):
         pass
@@ -28,21 +29,25 @@ class Predictor:
         return np.max(array)
 
     def predict_sum(self):
-        weighted_sum = np.zeros((len(self.database.get_actions()), len(self.database.get_actions())))
+        weighted_sum = np.zeros(
+            (len(self.database.get_actions()), len(self.database.get_actions())))
         for metric in self.metrics:
             current_metric = metric.get_metric()
-            weighted_sum += self.hyperparameters[metric.get_name()] * current_metric / (self.max(current_metric) - np.min(current_metric))
+            weighted_sum += self.hyperparameters[metric.get_name()] * (current_metric / (
+                self.max(current_metric) - np.min(current_metric)))
         self.weighted_result = weighted_sum
 
     def predict_product(self):
-        weighted_product = np.ones((len(self.database.get_actions()), len(self.database.get_actions())))
+        weighted_product = np.ones(
+            (len(self.database.get_actions()), len(self.database.get_actions())))
         for metric in self.metrics:
             current_metric = metric.get_metric()
-            weighted_product = weighted_product * (self.hyperparameters[metric.get_name()] * current_metric / (self.max(current_metric) - np.min(current_metric)))
+            weighted_product = weighted_product * (self.hyperparameters[metric.get_name(
+            )] * current_metric / (self.max(current_metric) - np.min(current_metric)))
         self.weighted_result = weighted_product
 
     def sort_results(self):
-    # sort sensor pairs based on average distance
+        # sort sensor pairs based on average distance
         l = len(self.database.get_actions())
         n = 0
         number_of_pairs = int((l*l)/2-l/2)
@@ -64,4 +69,4 @@ class Predictor:
 
         return sorted_pair_array, sorted_pair_labels
 
-#ToDO: only calculate all_times once for all time distance metrics
+# ToDO: only calculate all_times once for all time distance metrics

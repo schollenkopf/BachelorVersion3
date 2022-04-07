@@ -38,7 +38,6 @@ if __name__ == "__main__":
 
     engine.load(QUrl.fromLocalFile(qml_file))
     QThread.currentThread().setObjectName("MAIN")
-    print("main app:", QThread.currentThread())
     candidate_controller.updater()
 
     if not engine.rootObjects():

@@ -1,4 +1,4 @@
-from abstraction_worker import AbstractionWorker
+from abstraction_worker import AbstractionWorker, UpdateCandidatesWorker
 from PySide6.QtCore import Slot, QObject, QThread, Signal
 
 
@@ -9,23 +9,23 @@ class CandidateController(QObject):
         self.abstraction_controller = abstraction_controller
         self.thread = None
         self.worker = None
+        self.thread2 = None
+        self.worker2 = None
 
     updated = Signal(list, int, str, int)
 
     def updater(self):
-        print("7", QThread.currentThread().objectName())
         candidates = self.abstraction_controller.get_sorted_pair_labels()
-        print("8", QThread.currentThread().objectName())
-        process_model_string = f"abstractions_process_models/Abstraction{self.abstraction_controller.level_of_abstraction}.png"
+        process_model_string = f"abstractions_process_models/Abstraction{self.abstraction_controller.database.level_of_abstraction}.png"
         print("Update new Candidates")
         self.updated.emit(candidates, len(
-            candidates) - 1, process_model_string, self.abstraction_controller.level_of_abstraction)
-        print("9", QThread.currentThread().objectName())
+            candidates) - 1, process_model_string, self.abstraction_controller.database.level_of_abstraction)
 
-    @Slot(int)
-    def candidateSelected(self, candidate_index):
+    @Slot(int, list)
+    def candidateSelected(self, candidate_index, hyperparameters):
         print(f'User clicked on: {candidate_index}')
         self.abstraction_controller.set_pair_we_are_at(candidate_index)
+        self.abstraction_controller.change_hyperparameters(hyperparameters)
         self.thread = QThread()
 
         self.worker = AbstractionWorker(self.abstraction_controller)
@@ -35,11 +35,33 @@ class CandidateController(QObject):
         self.worker.finished.connect(self.thread.quit)
         self.worker.finished.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
-        self.worker.finished.connect(
-            lambda: print("is thread running2", QThread.currentThread().objectName()))
         self.thread.start()
 
         self.worker.finished.connect(
+
+            lambda: self.updater()
+        )
+
+    @Slot(int, list)
+    def recalculateCandidates(self, desired_abstraction_level, hyperparameters):
+        print("Recalculate Candidates")
+        self.abstraction_controller.change_hyperparameters(hyperparameters)
+        if (desired_abstraction_level != self.abstraction_controller.database.level_of_abstraction):
+            self.abstraction_controller.database.set_level_of_abstraction(
+                desired_abstraction_level)
+            self.abstraction_controller.reset()
+        self.thread2 = QThread()
+
+        self.worker2 = UpdateCandidatesWorker(self.abstraction_controller)
+        self.worker2.moveToThread(self.thread2)
+        self.thread2.started.connect(self.worker2.run)
+
+        self.worker2.finished.connect(self.thread2.quit)
+        self.worker2.finished.connect(self.worker2.deleteLater)
+        self.thread2.finished.connect(self.thread2.deleteLater)
+        self.thread2.start()
+
+        self.worker2.finished.connect(
 
             lambda: self.updater()
         )

@@ -3,12 +3,12 @@ import QtQuick.Controls
 import QtQuick.Window
 
 Window {
-    title: "HelloApp"
+    title: "Abstraction Tool"
     width: 900
     height: 600
     visible: true
     id: mainWindow
-
+    
     Row {
 
         id:mainRow
@@ -21,31 +21,79 @@ Window {
                     bottom:mainRow.bottom
                 }
                 width: 600
-
-            Rectangle {
-                height: 100
-                id: sliderRectangle
+            Rectangle{
+                id: titlRectangle
+                height: 50
                 anchors{
-                    left:processmodelcolumn.left
-                    right:processmodelcolumn.right
+                    left:parent.left
+                    right:parent.right
                 }
+                Text{
+                    text: "Abstraction Level: "+slider.value
+                    anchors.centerIn: parent      
+                    color: "black"
+                    font.pixelSize: 15
+                }
+            }
 
-                Slider {
-                        snapMode: Slider.SnapOnRelease
-                        id: slider
-                        anchors.fill: parent
-                        from: 0
-                        value: 0
-                        to: 1
-                        stepSize: 1
+            Rectangle{
+                id: topRowRectangle
+                height: 50
+                anchors{
+                    left:parent.left
+                    right:parent.right
+                }
+                
+                Row{
+                    id: topLeftRow
+                    anchors.fill: parent
+                
+                    Rectangle {
+                        width: 500
+                        id: sliderRectangle
+                        anchors{
+                            top:parent.top
+                            bottom:parent.bottom
+                        }
+
+                            Slider {
+                                    
+                                    snapMode: Slider.SnapOnRelease
+                                    id: slider
+                                    anchors.fill: parent
+                                    from: 0
+                                    value: 0
+                                    to: 1
+                                    stepSize: 1
+                            }
+
                     }
+                    Rectangle {
+                        id: toggleRectangle
+                        width: 100
+                        anchors{
+                            top:parent.top
+                            bottom:parent.bottom
+                        }
+                        Item {
+                            anchors.fill: parent
+                            Switch {
+                                anchors.fill: parent
+                                id: mySwitch
+                                
+                            }
+                            
+                        }
+                    }
+                }
 
             }
 
 
+
             Rectangle {
 
-                height: 800
+                height: 500
                 id: leftColumnRectangle
                 anchors{
                     left:processmodelcolumn.left
@@ -53,9 +101,18 @@ Window {
                 }
                 
                 Image {
+                    visible: mySwitch.position == false
+                    fillMode: Image.PreserveAspectFit
                     id: processModel
                     anchors.fill: parent
                     source: "abstractions_process_models/Abstraction"+slider.value+".png"
+                }
+                Image {
+                    visible: mySwitch.position == true
+                    fillMode: Image.PreserveAspectFit
+                    id: abstractionTree
+                    anchors.fill: parent
+                    source: "abstraction_tree/abstraction_tree"+slider.value+".png"
                 }
 
             }
@@ -109,9 +166,15 @@ Window {
                                 boundsBehavior: Flickable.StopAtBounds
                                 delegate: Item {
                                     width: list.width; height: 40
-                                    Column {
-                                        Text { text: display }
-                                    }
+                                    
+                                    Text { 
+                                        anchors.verticalCenter: parent.verticalCenter 
+                                        anchors.left: parent.left
+                                        text: display 
+                                        color: "black"
+                                        font.pixelSize: 10
+                                        }
+                                    
                                     MouseArea {
                                         anchors.fill: parent
                                         onClicked: { list.currentIndex = index }
@@ -153,16 +216,20 @@ Window {
                             height : 50
 
                             Button {
+                                
                                 id : mergeButton
                                 anchors.fill: parent
                                 Text{
+                                    anchors.centerIn: parent
                                     text: "MERGE"
                                     color: "black"
                                     font.pixelSize: 30
                                 }
                                 onClicked: { 
                                             bi.running = true; 
-                                            candidate_controller.candidateSelected(list.currentIndex)
+                                            mergeButton.enabled = false
+                                            reculateButton.enabled = false
+                                            candidate_controller.candidateSelected(list.currentIndex, [{"Median": firstMetricSlider.value},{"Stdev":secondMetricSlider.value},{"Direclty Follows Order=false":thirdMetricSlider.value}])
                                             list.model.removeRows(0, list.model.rowCount() - 1);
                                             }
                             }
@@ -181,10 +248,199 @@ Window {
 
                     id : abstractionTreeRectangle
 
-                    Text{
-                        text: "ABSTRACTION TREE"
-                        color: "black"
-                        font.pixelSize: 40
+                    Column {
+                        anchors.fill: parent
+                        id: predictorColumn
+
+                        Rectangle {
+                            id: metricsBoundingRectangle
+                            anchors {
+                                left: predictorColumn.left
+                                right: predictorColumn.right
+                            }
+                            height : 210
+
+                            Column {
+                                id: metricsColumn
+                                anchors.fill: parent
+
+                                Rectangle {
+                                    id: firstMetric
+                                    anchors {
+                                        left: metricsColumn.left
+                                        right: metricsColumn.right
+                                    }
+                                    height: 70
+                                    Row {
+                                        id: firstMetricRow
+                                        anchors.fill: parent
+
+                                        Rectangle {
+                                            width: 200
+                                            id: firstMetricSliderRectangle
+                                            anchors {
+                                                top: firstMetricRow.top
+                                                bottom: firstMetricRow.bottom
+                                            }
+                                            Slider {
+                                                
+                                                id: firstMetricSlider
+                                                anchors.fill: parent
+                                                from: 0
+                                                value: 0.5
+                                                to: 1
+                                                stepSize: 0.01
+                                                
+                                            }
+                                        }
+
+                                        Rectangle{
+                                            width: 100
+                                            id: firstMetricTextRectangle
+                                            anchors {
+                                                top: firstMetricRow.top
+                                                bottom: firstMetricRow.bottom
+                                            }
+                                            Text {
+                                                anchors.centerIn: parent
+                                                color: "black"
+                                                font.pixelSize: 10
+                                                text: "Median: "+firstMetricSlider.value
+                                            }
+                                        }
+                                        
+                                    }
+                                }
+                                
+                                Rectangle {
+                                    id: secondMetric
+                                    anchors {
+                                        left: metricsColumn.left
+                                        right: metricsColumn.right
+                                    }
+                                    height: 70
+                                    Row {
+                                        id: secondMetricRow
+                                        anchors.fill: parent
+
+                                        Rectangle {
+                                            width: 200
+                                            id: secondMetricSliderRectangle
+                                            anchors {
+                                                top: secondMetricRow.top
+                                                bottom: secondMetricRow.bottom
+                                            }
+                                            Slider {
+                                                
+                                                id: secondMetricSlider
+                                                anchors.fill: parent
+                                                from: 0
+                                                value: 0.5
+                                                to: 1
+                                                stepSize: 0.01
+                                                
+                                            }
+                                        }
+
+                                        Rectangle{
+                                            width: 100
+                                            id: secondMetricTextRectangle
+                                            anchors {
+                                                top: secondMetricRow.top
+                                                bottom: secondMetricRow.bottom
+                                            }
+                                            Text {
+                                                anchors.centerIn: parent
+                                                color: "black"
+                                                font.pixelSize: 10
+                                                text: "Stdev: "+secondMetricSlider.value
+                                            }
+                                        }
+                                        
+                                    }
+                                }
+
+                                Rectangle {
+                                    id: thirdMetric
+                                    anchors {
+                                        left: metricsColumn.left
+                                        right: metricsColumn.right
+                                    }
+                                    height: 70
+                                    Row {
+                                        id: thirdMetricRow
+                                        anchors.fill: parent
+
+                                        Rectangle {
+                                            width: 200
+                                            id: thirdMetricSliderRectangle
+                                            anchors {
+                                                top: thirdMetricRow.top
+                                                bottom: thirdMetricRow.bottom
+                                            }
+                                            Slider {
+                                                
+                                                id: thirdMetricSlider
+                                                anchors.fill: parent
+                                                from: 0
+                                                value: 0.5
+                                                to: 1
+                                                stepSize: 0.01
+                                                
+                                            }
+                                        }
+
+                                        Rectangle{
+                                            width: 100
+                                            id: thirdMetricTextRectangle
+                                            anchors {
+                                                top: thirdMetricRow.top
+                                                bottom: thirdMetricRow.bottom
+                                            }
+                                            Text {
+                                                anchors.centerIn: parent
+                                                color: "black"
+                                                font.pixelSize: 10
+                                                text: "DirectlyFollows: "+thirdMetricSlider.value
+                                            }
+                                        }
+                                        
+                                    }
+                                }
+                            }
+
+                        }
+
+                        Rectangle {
+                            id: reculateButtonRectangle
+                            anchors {
+                                left: predictorColumn.left
+                                right: predictorColumn.right
+                            }
+                            height : 40
+                            Button {
+                                id: reculateButton
+                                anchors.fill: parent
+                                onClicked: { 
+                                            bi.running = true; 
+                                            mergeButton.enabled = false
+                                            reculateButton.enabled = false
+                                            candidate_controller.recalculateCandidates(slider.value,[{"Median": firstMetricSlider.value},{"Stdev":secondMetricSlider.value},{"Direclty Follows Order=false":thirdMetricSlider.value}])
+                                            list.model.removeRows(0, list.model.rowCount() - 1);
+                                            slider.to = slider.value
+                                            
+                                            }
+
+                                Text{
+                                    anchors.centerIn: parent
+                                    text: "RECALCULATE"
+                                    color: "black"
+                                    font.pixelSize: 30
+                                }
+                            }
+                        }
+
+
                     }
 
                 }
@@ -204,6 +460,12 @@ Window {
             bi.running = false
             slider.to = abstraction_level
             slider.value = abstraction_level
+            mergeButton.enabled = true
+            reculateButton.enabled = true
+            if (len==0) {
+                mergeButton.enabled = false;
+            }
+            
         }
     }
 

@@ -19,7 +19,7 @@ class AbstractionControl():
         self.predictor = None
         self.log_processor = None
         self.heuristic_miner = None
-        self.level_of_abstraction = 0
+        #self.level_of_abstraction = 0
         self.pair_we_are_at = 0
         self.sorted_pair_array = []
         self.sorted_pair_labels = []
@@ -27,8 +27,9 @@ class AbstractionControl():
         self.setUp()
 
     def setUp(self):
+        self.database.increase_level_of_abstraction()
         data = self.csv_reader.read_data(
-            "Data.csv", "%Y-%m-%dT%H:%M:%S.%f",  6, 8114, ";", 3, 26)
+            "Data.csv", "%Y-%m-%dT%H:%M:%S.%f",  6, 8114, ";", 3, 26, False)
         self.database.update_latest_log(data)
         self.database.initiate_tree()
         self.log_processor = LogProcessor(self.database)
@@ -36,22 +37,33 @@ class AbstractionControl():
         self.heuristic_miner = HeuristicMiner(self.database)
         self.add_metrics()
         self.predictor = Predictor(self.metrics, self.database)
-        self.heuristic_miner.save_process_as_png(0)
-        print("Saving Process Model Abstraction 0")
+        self.heuristic_miner.save_process_as_png(
+            self.database.level_of_abstraction)
+        self.database.init_abstraction_tree_string()
+        self.database.generate_tree()
+        print(
+            f"Saving Process Model Abstraction {self.database.level_of_abstraction}")
         self.get_new_prediction()
+
+    def reset(self):
+        filename = f"abstractions/Abstraction{self.database.level_of_abstraction}.csv"
+        data = self.csv_reader.read_data(
+            filename, "%S.%f",  6, 8114, ",", 3, 26, True)
+        self.database.reset(data)
 
     def get_new_prediction(self):
         self.predictor.predict_sum()
         self.sorted_pair_array, self.sorted_pair_labels = self.predictor.sort_results()
 
     def abstract(self):
-        self.level_of_abstraction += 1
+        self.database.increase_level_of_abstraction()
         set_of_actions = self.database.get_actions()
 
         e1 = set_of_actions[self.sorted_pair_labels[0, self.pair_we_are_at]]
         e2 = set_of_actions[self.sorted_pair_labels[1, self.pair_we_are_at]]
         nr_events_abstracted = self.log_processor.abstract_log(e1, e2, e1 + e2)
         self.log_processor.delete_repetitions()
+        self.database.update_latest_log(self.database.latest_log)
 
         print(f"Merging {e1} and {e2}")
         print(f"Abstracted {nr_events_abstracted} Events")
@@ -59,13 +71,10 @@ class AbstractionControl():
         print(f"{self.database.events_deleted_last_abstraction} have been deleted")
 
         self.database.update_tree(e1, e2, e1 + e2)
-        print("1", QThread.currentThread().objectName())
-        self.heuristic_miner.save_process_as_png(self.level_of_abstraction)
-        print("2", QThread.currentThread().objectName())
+        self.heuristic_miner.save_process_as_png(
+            self.database.level_of_abstraction)
         self.get_new_prediction()
-        print("3", QThread.currentThread().objectName())
         self.pair_we_are_at = 0
-        print("4", QThread.currentThread().objectName())
 
     def get_sorted_pair_labels(self):
         set_of_actions = self.database.get_actions()
@@ -80,6 +89,12 @@ class AbstractionControl():
 
     def set_pair_we_are_at(self, i):
         self.pair_we_are_at = i
+
+    def change_hyperparameters(self, metricslist):
+        print(metricslist)
+        for metric in metricslist:
+            for name in metric:
+                self.predictor.change_hyperparameter(name, metric[name])
 
     """
     data = csv_reader.read_data(
