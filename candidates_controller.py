@@ -39,7 +39,7 @@ class CandidateController(QObject):
             lambda: print("is thread running2", QThread.currentThread().objectName()))
         self.thread.start()
 
-        self.thread.finished.connect(
+        self.worker.finished.connect(
 
             lambda: self.updater()
         )
