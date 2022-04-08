@@ -1,11 +1,12 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Window
+import "constants.js" as JS
 
 Window {
     title: "Abstraction Tool"
-    width: 900
-    height: 600
+    width: JS.width
+    height: JS.height
     visible: true
     id: mainWindow
     
@@ -17,28 +18,28 @@ Window {
         Column {
             id: processmodelcolumn
             anchors{
-                    top:mainRow.top
-                    bottom:mainRow.bottom
+                    top:parent.top
+                    bottom:parent.bottom
                 }
-                width: 600
+                width: parent.width - 250
             Rectangle{
                 id: titlRectangle
-                height: 50
+                height:  0.1 * parent.height
                 anchors{
                     left:parent.left
                     right:parent.right
                 }
                 Text{
-                    text: "Abstraction Level: "+slider.value
+                    text: "Abstraction Level: "+ slider.value
                     anchors.centerIn: parent      
-                    color: "black"
+                    color: JS.textColor
                     font.pixelSize: 15
                 }
             }
 
             Rectangle{
                 id: topRowRectangle
-                height: 50
+                height: 0.1 * parent.height
                 anchors{
                     left:parent.left
                     right:parent.right
@@ -49,7 +50,7 @@ Window {
                     anchors.fill: parent
                 
                     Rectangle {
-                        width: 500
+                        width: 0.9 * parent.width
                         id: sliderRectangle
                         anchors{
                             top:parent.top
@@ -60,7 +61,12 @@ Window {
                                     
                                     snapMode: Slider.SnapOnRelease
                                     id: slider
-                                    anchors.fill: parent
+                                    anchors{
+                                        top:parent.top
+                                        bottom:parent.bottom
+                                        right: parent.right
+                                    }
+                                    width: 0.95 * parent.width
                                     from: 0
                                     value: 0
                                     to: 1
@@ -70,7 +76,7 @@ Window {
                     }
                     Rectangle {
                         id: toggleRectangle
-                        width: 100
+                        width: 0.1 * parent.width
                         anchors{
                             top:parent.top
                             bottom:parent.bottom
@@ -93,7 +99,7 @@ Window {
 
             Rectangle {
 
-                height: 500
+                height: 0.8 * parent.height
                 id: leftColumnRectangle
                 anchors{
                     left:processmodelcolumn.left
@@ -126,7 +132,7 @@ Window {
                 top:mainRow.top
                 bottom:mainRow.bottom
             }
-            width: 300
+            width: 250
 
             Column{
 
@@ -140,7 +146,7 @@ Window {
                                 left: rightColumn.left
                                 right: rightColumn.right
                             }
-                    height : 350
+                    height : 0.58 * parent.height
 
                     id : mainMergeRectangle
 
@@ -155,7 +161,7 @@ Window {
                                 left: mergeColumn.left
                                 right: mergeColumn.right
                             }
-                            height : 300
+                            height : 0.85 * parent.height
                             id: listRectangle
 
                             ListView {
@@ -171,7 +177,7 @@ Window {
                                         anchors.verticalCenter: parent.verticalCenter 
                                         anchors.left: parent.left
                                         text: display 
-                                        color: "black"
+                                        color: JS.textColor
                                         font.pixelSize: 10
                                         }
                                     
@@ -213,7 +219,7 @@ Window {
                                 left: mergeColumn.left
                                 right: mergeColumn.right
                             }
-                            height : 50
+                            height : 0.15 * parent.height
 
                             Button {
                                 
@@ -222,7 +228,7 @@ Window {
                                 Text{
                                     anchors.centerIn: parent
                                     text: "MERGE"
-                                    color: "black"
+                                    color: JS.textColor
                                     font.pixelSize: 30
                                 }
                                 onClicked: { 
@@ -244,7 +250,7 @@ Window {
                                 left: rightColumn.left
                                 right: rightColumn.right
                             }
-                    height : 250
+                    height : 0.42 * parent.height
 
                     id : abstractionTreeRectangle
 
@@ -258,7 +264,7 @@ Window {
                                 left: predictorColumn.left
                                 right: predictorColumn.right
                             }
-                            height : 210
+                            height : 0.9 * parent.height
 
                             Column {
                                 id: metricsColumn
@@ -303,7 +309,7 @@ Window {
                                             }
                                             Text {
                                                 anchors.centerIn: parent
-                                                color: "black"
+                                                color: JS.textColor
                                                 font.pixelSize: 10
                                                 text: "Median: "+firstMetricSlider.value
                                             }
@@ -417,7 +423,7 @@ Window {
                                 left: predictorColumn.left
                                 right: predictorColumn.right
                             }
-                            height : 40
+                            height : 0.1 * parent.height
                             Button {
                                 id: reculateButton
                                 anchors.fill: parent

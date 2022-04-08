@@ -31,7 +31,7 @@ class AbstractionControl():
         data = self.csv_reader.read_data(
             "Data.csv", "%Y-%m-%dT%H:%M:%S.%f",  6, 8114, ";", 3, 26, False)
         self.database.update_latest_log(data)
-        self.database.initiate_tree()
+        #self.database.initiate_tree()
         self.log_processor = LogProcessor(self.database)
         self.log_processor.delete_repetitions()
         self.heuristic_miner = HeuristicMiner(self.database)

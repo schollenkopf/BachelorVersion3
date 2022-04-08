@@ -1,8 +1,7 @@
 
-import pandas as pd
-from neo4j import GraphDatabase
+
+#from neo4j import GraphDatabase
 from pathlib import Path
-from PySide6.QtCore import QThread
 import graphviz
 
 
@@ -15,10 +14,12 @@ class Database:
         self.trace_column = trace_column
         self.timestamp_column = timestamp_column
         self.events_deleted_last_abstraction = 0
-        self.driver = GraphDatabase.driver(uri, auth=(user, password))
         self.abstraction_tree_string = ""
+        """
+        self.driver = GraphDatabase.driver(uri, auth=(user, password))
         with self.driver.session() as session:
             session.run("Match (n) Detach Delete (n)")
+        """
 
     def init_abstraction_tree_string(self):
         initial_string = ""
@@ -64,21 +65,26 @@ class Database:
         self.latest_log = self.latest_log.reset_index(drop=True)
         self.events_deleted_last_abstraction = len(ids_to_delete)
 
+    """
     def initiate_tree(self):
         with self.driver.session() as session:
             for action in self.get_actions():
                 session.run("Create (e:Action{name: \""+action+"\"})")
         self.driver.close()
+    """
 
     def update_tree(self, e1, e2, enew):
         self.build_abstraction_tree(e1, e2, self.level_of_abstraction)
         print(self.abstraction_tree_string)
         self.generate_tree()
+        """
         with self.driver.session() as session:
             session.run("Create (e:Action{name: \""+enew+"\"})")
             session.run("MATCH(a:Action),(b:Action),(c:Action) WHERE a.name = \""+e1+"\" AND b.name = \"" +
                         e2+"\" AND c.name = \""+enew+"\" CREATE (c)-[r:ABSTRACTS]->(a) CREATE (c)-[r2:ABSTRACTS]->(b) ")
         self.driver.close()
+        """
+        
 
     def build_abstraction_tree(self, e1, e2, level_of_abstraction):
         self.abstraction_tree_string = self.abstraction_tree_string + e1 + "->" + e1 + e2 + \
