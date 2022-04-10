@@ -19,6 +19,7 @@ from PySide6.QtCore import QUrl, QThread
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 
+from id_generator import IdGenerator
 from candidate_list_model import CandidateListModel
 from candidates_controller import CandidateController
 from abstraction_control import AbstractionControl
@@ -31,10 +32,11 @@ if __name__ == "__main__":
     abstraction_control = AbstractionControl()
     candidate_list_model = CandidateListModel()
     candidate_controller = CandidateController(abstraction_control)
-
+    id_generator = IdGenerator()
     context = engine.rootContext()
     context.setContextProperty('candidate_list_model', candidate_list_model)
     context.setContextProperty('candidate_controller', candidate_controller)
+    context.setContextProperty('id_generator', id_generator)
 
     engine.load(QUrl.fromLocalFile(qml_file))
     QThread.currentThread().setObjectName("MAIN")

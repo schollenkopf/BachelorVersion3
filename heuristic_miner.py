@@ -4,13 +4,17 @@ from pm4py.visualization.heuristics_net import visualizer as hn_visualizer
 from pm4py.util import constants
 from pathlib import Path
 
+
 class HeuristicMiner():
 
-    def __init__(self,database):
+    def __init__(self, database):
         self.database = database
-        self.case_id_key = database.get_latest_log().columns[database.get_trace_column()]
-        self.action_key = database.get_latest_log().columns[database.get_action_column()]
-        self.timestamp_key = database.get_latest_log().columns[database.get_timestamp_column()]
+        self.case_id_key = database.get_latest_log(
+        ).columns[database.get_trace_column()]
+        self.action_key = database.get_latest_log(
+        ).columns[database.get_action_column()]
+        self.timestamp_key = database.get_latest_log(
+        ).columns[database.get_timestamp_column()]
 
     def save_process_as_png(self, level_of_abstraction):
         parameters = {log_converter.Variants.TO_EVENT_LOG.value.Parameters.CASE_ID_KEY: self.case_id_key,
@@ -20,6 +24,6 @@ class HeuristicMiner():
             self.database.get_latest_log(), parameters=parameters, variant=log_converter.Variants.TO_EVENT_LOG)
         heu_net = heuristics_miner.apply_heu(event_log, parameters=parameters)
         gviz = hn_visualizer.apply(heu_net)
-        path_file = Path(__file__).parent / f"abstractions_process_models/Abstraction{str(level_of_abstraction)}.png"
+        path_file = Path(__file__).parent / \
+            f"tab{self.database.currenttab}/abstractions_process_models/Abstraction{str(level_of_abstraction)}.png"
         hn_visualizer.save(gviz, path_file)
-       

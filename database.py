@@ -3,18 +3,21 @@
 #from neo4j import GraphDatabase
 from pathlib import Path
 import graphviz
+import shutil
+import os
 
 
 class Database:
 
     def __init__(self, action_column, trace_column, timestamp_column, uri, user, password):
-        self.latest_log = None
-        self.level_of_abstraction = -1
+        self.latest_log = [None]
+        self.level_of_abstraction = [-1]
         self.action_column = action_column
         self.trace_column = trace_column
         self.timestamp_column = timestamp_column
         self.events_deleted_last_abstraction = 0
-        self.abstraction_tree_string = ""
+        self.abstraction_tree_string = [""]
+        self.currenttab = 0
         """
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
         with self.driver.session() as session:
@@ -25,21 +28,22 @@ class Database:
         initial_string = ""
         for action in self.get_actions():
             initial_string = initial_string + action + ";"
-        self.abstraction_tree_string = initial_string
+        self.abstraction_tree_string[self.currenttab] = initial_string
 
     def update_latest_log(self, data):
-        if self.level_of_abstraction >= 0:
+        if self.level_of_abstraction[self.currenttab] >= 0:
             path_file = Path(
-                __file__).parent / f"abstractions/Abstraction{self.level_of_abstraction}.csv"
+                __file__).parent / f"tab{self.currenttab}/abstractions/Abstraction{self.level_of_abstraction[self.currenttab]}.csv"
             data.to_csv(path_file, index=False)
-        self.latest_log = data
-        self.latest_log = self.latest_log.reset_index(drop=True)
+        self.latest_log[self.currenttab] = data
+        self.latest_log[self.currenttab] = self.latest_log[self.currenttab].reset_index(
+            drop=True)
 
     def get_latest_log(self):
-        return self.latest_log
+        return self.latest_log[self.currenttab]
 
     def get_actions(self):
-        return list(self.latest_log[self.latest_log.columns[self.action_column]].unique())
+        return list(self.latest_log[self.currenttab][self.latest_log[self.currenttab].columns[self.action_column]].unique())
 
     def get_action_column(self):
         return self.action_column
@@ -51,18 +55,20 @@ class Database:
         return self.trace_column
 
     def get_number_of_traces(self):
-        return len(list(self.latest_log[self.latest_log.columns[self.trace_column]].unique()))
+        return len(list(self.latest_log[self.currenttab][self.latest_log[self.currenttab].columns[self.trace_column]].unique()))
 
     def get_traces(self):
-        return list(self.latest_log[self.latest_log.columns[self.trace_column]].unique())
+        return list(self.latest_log[self.currenttab][self.latest_log[self.currenttab].columns[self.trace_column]].unique())
 
     def change_event(self, row_number, column_number, new_value):
-        self.latest_log.at[row_number,
-                           self.latest_log.columns[column_number]] = new_value
+        self.latest_log[self.currenttab].at[row_number,
+                                            self.latest_log[self.currenttab].columns[column_number]] = new_value
 
     def delete_events(self, ids_to_delete):
-        self.latest_log = self.latest_log.drop(labels=ids_to_delete, axis=0)
-        self.latest_log = self.latest_log.reset_index(drop=True)
+        self.latest_log[self.currenttab] = self.latest_log[self.currenttab].drop(
+            labels=ids_to_delete, axis=0)
+        self.latest_log[self.currenttab] = self.latest_log[self.currenttab].reset_index(
+            drop=True)
         self.events_deleted_last_abstraction = len(ids_to_delete)
 
     """
@@ -74,8 +80,10 @@ class Database:
     """
 
     def update_tree(self, e1, e2, enew):
-        self.build_abstraction_tree(e1, e2, self.level_of_abstraction)
-        print(self.abstraction_tree_string)
+        print("one")
+        self.build_abstraction_tree(
+            e1, e2, self.level_of_abstraction[self.currenttab])
+        print(self.abstraction_tree_string[self.currenttab])
         self.generate_tree()
         """
         with self.driver.session() as session:
@@ -84,38 +92,48 @@ class Database:
                         e2+"\" AND c.name = \""+enew+"\" CREATE (c)-[r:ABSTRACTS]->(a) CREATE (c)-[r2:ABSTRACTS]->(b) ")
         self.driver.close()
         """
-        
 
     def build_abstraction_tree(self, e1, e2, level_of_abstraction):
-        self.abstraction_tree_string = self.abstraction_tree_string + e1 + "->" + e1 + e2 + \
+        self.abstraction_tree_string[self.currenttab] = self.abstraction_tree_string[self.currenttab] + e1 + "->" + e1 + e2 + \
             "[label = " + str(level_of_abstraction) + "]" + ";"
-        self.abstraction_tree_string = self.abstraction_tree_string + e2 + "->" + e1 + e2 + \
+        self.abstraction_tree_string[self.currenttab] = self.abstraction_tree_string[self.currenttab] + e2 + "->" + e1 + e2 + \
             "[label = " + str(level_of_abstraction) + "]" + ";"
 
     def generate_tree(self):
-        name = f"abstraction_tree{self.level_of_abstraction}"
+        name = f"abstraction_tree{self.level_of_abstraction[self.currenttab]}"
 
         dot = graphviz.Source(
-            'digraph "tree" { ' + self.abstraction_tree_string + '}', name)
+            'digraph "tree" { ' + self.abstraction_tree_string[self.currenttab] + '}', name)
         dot.format = 'png'
-        dot.render(directory='abstraction_tree/')
+        dir = f"tab{self.currenttab}/abstraction_tree/"
+        dot.render(directory=dir)
 
     def increase_level_of_abstraction(self):
         print("increasing")
-        self.level_of_abstraction += 1
+        self.level_of_abstraction[self.currenttab] += 1
 
     def set_level_of_abstraction(self, desired):
-        self.level_of_abstraction = desired
-        print(self.level_of_abstraction)
+        self.level_of_abstraction[self.currenttab] = desired
+        print(self.level_of_abstraction[self.currenttab])
 
     def reset(self, data):
-        self.latest_log = data
-        abstraction_tree_file_name = "abstraction_tree/abstraction_tree" + \
-            str(self.level_of_abstraction)
+        self.latest_log[self.currenttab] = data
+        abstraction_tree_file_name = f"tab{self.currenttab}/abstraction_tree/abstraction_tree" + \
+            str(self.level_of_abstraction[self.currenttab])
         text_file = open(abstraction_tree_file_name, "r")
 
         cut_file = text_file.read()
         cut_file = cut_file[16:]
-        self.abstraction_tree_string = cut_file[:-2]
+        self.abstraction_tree_string[self.currenttab] = cut_file[:-2]
         print(self.abstraction_tree_string)
         text_file.close()
+
+    def newTab(self, tabid):
+        self.level_of_abstraction.append(self.level_of_abstraction[0])
+        self.latest_log.append(self.latest_log[0])
+        self.abstraction_tree_string.append(self.abstraction_tree_string[0])
+        tree_src = "tab0"
+        tree_dst = "tab" + str(tabid)
+        if (os.path.isdir(tree_dst)):
+            shutil.rmtree(tree_dst)
+        shutil.copytree(tree_src, tree_dst)

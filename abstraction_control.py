@@ -31,14 +31,14 @@ class AbstractionControl():
         data = self.csv_reader.read_data(
             "Data.csv", "%Y-%m-%dT%H:%M:%S.%f",  6, 8114, ";", 3, 26, False)
         self.database.update_latest_log(data)
-        #self.database.initiate_tree()
+        # self.database.initiate_tree()
         self.log_processor = LogProcessor(self.database)
         self.log_processor.delete_repetitions()
         self.heuristic_miner = HeuristicMiner(self.database)
         self.add_metrics()
         self.predictor = Predictor(self.metrics, self.database)
         self.heuristic_miner.save_process_as_png(
-            self.database.level_of_abstraction)
+            self.database.level_of_abstraction[self.database.currenttab])
         self.database.init_abstraction_tree_string()
         self.database.generate_tree()
         print(
@@ -46,7 +46,7 @@ class AbstractionControl():
         self.get_new_prediction()
 
     def reset(self):
-        filename = f"abstractions/Abstraction{self.database.level_of_abstraction}.csv"
+        filename = f"tab{self.database.currenttab}/abstractions/Abstraction{self.database.level_of_abstraction[self.database.currenttab]}.csv"
         data = self.csv_reader.read_data(
             filename, "%S.%f",  6, 8114, ",", 3, 26, True)
         self.database.reset(data)
@@ -58,12 +58,15 @@ class AbstractionControl():
     def abstract(self):
         self.database.increase_level_of_abstraction()
         set_of_actions = self.database.get_actions()
-
+        print(set_of_actions)
         e1 = set_of_actions[self.sorted_pair_labels[0, self.pair_we_are_at]]
         e2 = set_of_actions[self.sorted_pair_labels[1, self.pair_we_are_at]]
         nr_events_abstracted = self.log_processor.abstract_log(e1, e2, e1 + e2)
+        print("1")
         self.log_processor.delete_repetitions()
-        self.database.update_latest_log(self.database.latest_log)
+        print("2")
+        self.database.update_latest_log(
+            self.database.latest_log[self.database.currenttab])
 
         print(f"Merging {e1} and {e2}")
         print(f"Abstracted {nr_events_abstracted} Events")
@@ -71,9 +74,12 @@ class AbstractionControl():
         print(f"{self.database.events_deleted_last_abstraction} have been deleted")
 
         self.database.update_tree(e1, e2, e1 + e2)
+        print("3")
         self.heuristic_miner.save_process_as_png(
-            self.database.level_of_abstraction)
+            self.database.level_of_abstraction[self.database.currenttab])
+        print("3")
         self.get_new_prediction()
+        print("3")
         self.pair_we_are_at = 0
 
     def get_sorted_pair_labels(self):
@@ -103,3 +109,6 @@ class AbstractionControl():
         database = Database(
             4, 1, 2, "bolt://localhost:7687", "neo4j", "password")
     """
+
+    def newTab(self, tab):
+        self.database.newTab(tab)
