@@ -43,8 +43,9 @@ Window {
                                         bi.running = true
                                         mergeButton.enabled = false
                                         reculateButton.enabled = false
-                                        candidate_controller.changedtab(bar.currentIndex,[{"Median": firstMetricSlider.value},{"Stdev":secondMetricSlider.value},{"Direclty Follows Order=false":thirdMetricSlider.value}])
                                         list.model.removeRows(0, list.model.rowCount() - 1);
+                                        candidate_controller.changedtab(bar.currentIndex,[{"Median": firstMetricSlider.value},{"Stdev":secondMetricSlider.value},{"Direclty Follows Order=false":thirdMetricSlider.value}])
+                                        
                                     }
                                     
                                 }
@@ -161,6 +162,7 @@ Window {
                                     top:parent.top 
                                     bottom:parent.bottom
                                 }
+                                /**
                                 Item {
                                     anchors.fill: parent
                                     Switch {
@@ -169,6 +171,60 @@ Window {
                                         
                                     }
                                 
+                                }**/
+                                Row{
+                                    id: mySwitch
+                                    anchors.fill: parent
+                                    property int position: 0
+                                    Button {
+                                        
+                                        id : pm_button
+                                        anchors{
+                                            top:parent.top 
+                                            bottom:parent.bottom
+                                        }
+                                        width : parent.width * 0.34
+                                        Text{
+                                            text: "PM"
+                                        }
+                                        
+                                        onClicked: { 
+                                                    mySwitch.position = 0
+                                                    }
+                                    }
+                                    Button {
+                                        
+                                        id : at_button
+                                        anchors{
+                                            top:parent.top 
+                                            bottom:parent.bottom
+                                        }
+                                        width : parent.width * 0.33
+                                        Text{
+                                            text: "AT"
+                                        }
+                                        
+                                        onClicked: { 
+                                                    mySwitch.position = 1
+                                                    }
+                                    }
+                                    Button {
+                                        
+                                        id : dl_button
+                                        anchors{
+                                            top:parent.top 
+                                            bottom:parent.bottom
+                                        }
+                                        width : parent.width * 0.33
+                                        Text{
+                                            text: "DL"
+                                        }
+                                        
+                                        onClicked: { 
+                                                    mySwitch.position = 2
+                                                    }
+                                    }
+
                                 }
                             }
                         }
@@ -177,28 +233,25 @@ Window {
 
 
 
-                    
-
-
-        StackLayout {  
+        Rectangle{      
             height: 0.75 * parent.height
-                            anchors {
-                                left: parent.left
-                                right: parent.right
-                            }
+            anchors {
+                left: parent.left
+                right: parent.right
+            }      
+        
+        StackLayout {  
+            
             currentIndex: bar.currentIndex
             id: stackLayout
-            anchors {
-                top: bar.bottom
-                left: mainWindow.left
-                right: mainWindow.right
-                bottom: mainWindow.bottom
-            }
+            anchors.fill: parent
             
                 
             AbstractionTab {
             }
             
+        }
+
         }
     
                 }
@@ -541,7 +594,7 @@ Window {
             Connections {
         target: candidate_controller
         function onUpdated(l, len, process_model_string,abstraction_level) {
-            console.log(len + 1)
+            //console.log(len + 1)
             list.model.insertRows(0, len, l);
             vbar.size = listRectangle.height / ((list.model.rowCount()) * 40);
             //processModel.source =   process_model_string;
@@ -565,7 +618,7 @@ Window {
             firstMetricSlider.value = m1 
             secondMetricSlider.value = m2
             thirdMetricSlider.value = m3
-            console.log("connected")
+            //console.log("connected")
             
         }
     }

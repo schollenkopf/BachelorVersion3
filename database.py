@@ -83,7 +83,7 @@ class Database:
         print("one")
         self.build_abstraction_tree(
             e1, e2, self.level_of_abstraction[self.currenttab])
-        print(self.abstraction_tree_string[self.currenttab])
+        #print(self.abstraction_tree_string[self.currenttab])
         self.generate_tree()
         """
         with self.driver.session() as session:
@@ -125,12 +125,12 @@ class Database:
         cut_file = text_file.read()
         cut_file = cut_file[16:]
         self.abstraction_tree_string[self.currenttab] = cut_file[:-2]
-        print(self.abstraction_tree_string)
+        #print(self.abstraction_tree_string)
         text_file.close()
 
     def newTab(self, tabid):
         self.level_of_abstraction.append(self.level_of_abstraction[0])
-        self.latest_log.append(self.latest_log[0])
+        self.latest_log.append(self.latest_log[0].copy())
         self.abstraction_tree_string.append(self.abstraction_tree_string[0])
         tree_src = "tab0"
         tree_dst = "tab" + str(tabid)

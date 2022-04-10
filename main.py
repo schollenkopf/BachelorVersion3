@@ -18,6 +18,7 @@ from pathlib import Path
 from PySide6.QtCore import QUrl, QThread
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
+from display_datalog import DataFrameModel
 
 from id_generator import IdGenerator
 from candidate_list_model import CandidateListModel
@@ -33,10 +34,12 @@ if __name__ == "__main__":
     candidate_list_model = CandidateListModel()
     candidate_controller = CandidateController(abstraction_control)
     id_generator = IdGenerator()
+    display_datalog = DataFrameModel("Data.csv", ";", range(6), 8114)
     context = engine.rootContext()
     context.setContextProperty('candidate_list_model', candidate_list_model)
     context.setContextProperty('candidate_controller', candidate_controller)
-    context.setContextProperty('id_generator', id_generator)
+    context.setContextProperty('candidate_controller', candidate_controller)
+    context.setContextProperty('table_model', display_datalog)
 
     engine.load(QUrl.fromLocalFile(qml_file))
     QThread.currentThread().setObjectName("MAIN")

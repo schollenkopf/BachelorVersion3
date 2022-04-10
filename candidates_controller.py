@@ -23,7 +23,7 @@ class CandidateController(QObject):
     def updater(self):
         candidates = self.abstraction_controller.get_sorted_pair_labels()
         process_model_string = f"abstractions_process_models/Abstraction{self.abstraction_controller.database.level_of_abstraction[self.abstraction_controller.database.currenttab]}.png"
-        print("Update new Candidates")
+        #print("Update new Candidates")
         self.updated.emit(candidates, len(
             candidates) - 1, process_model_string, self.abstraction_controller.database.level_of_abstraction[self.abstraction_controller.database.currenttab])
 
@@ -93,8 +93,7 @@ class CandidateController(QObject):
     def changedtab(self, newtab, oldhyperparams):
         self.hyperparams[self.abstraction_controller.database.currenttab] = oldhyperparams
         self.abstraction_controller.database.currenttab = newtab
-        self.recalculateCandidates(
-            self.abstraction_controller.database.level_of_abstraction[newtab], self.hyperparams[newtab])
+        self.updater()
         self.tabchanger()
-        print("now on tab", newtab)
+        print("Now on tab: ", newtab)
         print(self.hyperparams)

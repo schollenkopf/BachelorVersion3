@@ -21,8 +21,8 @@ class AbstractionControl():
         self.heuristic_miner = None
         #self.level_of_abstraction = 0
         self.pair_we_are_at = 0
-        self.sorted_pair_array = []
-        self.sorted_pair_labels = []
+        self.sorted_pair_array = [[]]
+        self.sorted_pair_labels = [[]]
 
         self.setUp()
 
@@ -53,38 +53,40 @@ class AbstractionControl():
 
     def get_new_prediction(self):
         self.predictor.predict_sum()
-        self.sorted_pair_array, self.sorted_pair_labels = self.predictor.sort_results()
+        self.sorted_pair_array[self.database.currenttab], self.sorted_pair_labels[self.database.currenttab] = self.predictor.sort_results()
 
     def abstract(self):
         self.database.increase_level_of_abstraction()
         set_of_actions = self.database.get_actions()
-        print(set_of_actions)
-        e1 = set_of_actions[self.sorted_pair_labels[0, self.pair_we_are_at]]
-        e2 = set_of_actions[self.sorted_pair_labels[1, self.pair_we_are_at]]
+        e1 = set_of_actions[self.sorted_pair_labels[self.database.currenttab][0, self.pair_we_are_at]]
+        e2 = set_of_actions[self.sorted_pair_labels[self.database.currenttab][1, self.pair_we_are_at]]
         nr_events_abstracted = self.log_processor.abstract_log(e1, e2, e1 + e2)
-        print("1")
+        #print("1")
         self.log_processor.delete_repetitions()
-        print("2")
+        #print("2")
         self.database.update_latest_log(
             self.database.latest_log[self.database.currenttab])
 
-        print(f"Merging {e1} and {e2}")
-        print(f"Abstracted {nr_events_abstracted} Events")
-        print(f"Now you only have {len(self.database.get_actions())} actions")
-        print(f"{self.database.events_deleted_last_abstraction} have been deleted")
+        #print(f"Merging {e1} and {e2}")
+        #print(f"Abstracted {nr_events_abstracted} Events")
+        #print(f"Now you only have {len(self.database.get_actions())} actions")
+        #print(f"{self.database.events_deleted_last_abstraction} have been deleted")
 
         self.database.update_tree(e1, e2, e1 + e2)
-        print("3")
+        #print("3")
         self.heuristic_miner.save_process_as_png(
             self.database.level_of_abstraction[self.database.currenttab])
-        print("3")
+        #print("3")
         self.get_new_prediction()
-        print("3")
+        #print("3")
         self.pair_we_are_at = 0
 
     def get_sorted_pair_labels(self):
         set_of_actions = self.database.get_actions()
-        return [(set_of_actions[self.sorted_pair_labels[0, n]], set_of_actions[self.sorted_pair_labels[1, n]]) for n in range(len(self.sorted_pair_labels[0, :]))]
+        candidates = []
+        for n in range(len(self.sorted_pair_labels[self.database.currenttab][0][:])):
+            candidates.append((set_of_actions[self.sorted_pair_labels[self.database.currenttab][0][n]], set_of_actions[self.sorted_pair_labels[self.database.currenttab][1][n]]))
+        return candidates
 
     def add_metrics(self):
         time_distance_stdev = TimeDistanceStdev(self.database)
@@ -97,7 +99,7 @@ class AbstractionControl():
         self.pair_we_are_at = i
 
     def change_hyperparameters(self, metricslist):
-        print(metricslist)
+        #print(metricslist)
         for metric in metricslist:
             for name in metric:
                 self.predictor.change_hyperparameter(name, metric[name])
@@ -109,6 +111,11 @@ class AbstractionControl():
         database = Database(
             4, 1, 2, "bolt://localhost:7687", "neo4j", "password")
     """
+    def swap_candidates(self, tab):
+        return self.sorted_pair_array[tab], self.sorted_pair_array[tab]
 
     def newTab(self, tab):
+        print("here tab " + str(tab))
+        self.sorted_pair_array.append(self.sorted_pair_array[0])
+        self.sorted_pair_labels.append(self.sorted_pair_labels[0])
         self.database.newTab(tab)
