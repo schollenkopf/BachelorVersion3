@@ -20,6 +20,7 @@ class CandidateController(QObject):
 
     tabchanged = Signal(int, float, float, float)
 
+    @Slot()
     def updater(self):
         candidates = self.abstraction_controller.get_sorted_pair_labels()
         process_model_string = f"abstractions_process_models/Abstraction{self.abstraction_controller.database.level_of_abstraction[self.abstraction_controller.database.currenttab]}.png"

@@ -34,12 +34,11 @@ if __name__ == "__main__":
     context = engine.rootContext()
     context.setContextProperty('candidate_list_model', candidate_list_model)
     context.setContextProperty('candidate_controller', candidate_controller)
-    context.setContextProperty('candidate_controller', candidate_controller)
     context.setContextProperty('table_model', display_datalog)
 
     engine.load(QUrl.fromLocalFile(qml_file))
     QThread.currentThread().setObjectName("MAIN")
-    candidate_controller.updater()
+    
 
     if not engine.rootObjects():
         sys.exit(-1)
