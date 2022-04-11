@@ -302,6 +302,7 @@ Window {
                                         anchors.fill: parent
                                         flickableDirection: Flickable.VerticalFlick
                                         boundsBehavior: Flickable.StopAtBounds
+                                        clip: true
                                         delegate: Item {
                                             width: list.width; height: 40
                                             

@@ -23,13 +23,12 @@ class AbstractionControl():
         self.pair_we_are_at = 0
         self.sorted_pair_array = [[]]
         self.sorted_pair_labels = [[]]
-
+        #filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds
         self.setUp()
 
     def setUp(self):
         self.database.increase_level_of_abstraction()
-        data = self.csv_reader.read_data(
-            "Data.csv", "%Y-%m-%dT%H:%M:%S.%f",  6, 8114, ";", 3, 26, False)
+        data = self.csv_reader.read_data("Data.csv", "%Y-%m-%dT%H:%M:%S.%f",  6, 8114, ";", 3, 26, False)
         self.database.update_latest_log(data)
         # self.database.initiate_tree()
         self.log_processor = LogProcessor(self.database)

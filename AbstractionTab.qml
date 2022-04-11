@@ -33,6 +33,7 @@ Rectangle {
                         TableView {
                             id: tableView
                             visible: mySwitch.position == 2
+                            clip: true
                             columnWidthProvider: function (column) { return 150; }
                             rowHeightProvider: function (column) { return 60; }
                             
@@ -45,7 +46,7 @@ Rectangle {
                                 //color: parseFloat(display) > 50 ? 'green' : 'red'
                                 Text {
                                     text: display
-                                    
+                                    clip: true
                                     anchors.fill: parent
                                     anchors.margins: 10
                                     //color: 'white'
