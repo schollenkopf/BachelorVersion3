@@ -7,8 +7,7 @@ from pathlib import Path
 class CSVReader:
 
     def read_data(self, filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds):
-        path_file = Path(__file__).parent / filename
-        data = pd.read_csv(path_file, sep=separator, usecols=range(
+        data = pd.read_csv(filename, sep=separator, usecols=range(
             number_columns), nrows=number_rows)
         if (not(inseconds)):
             for n, event in enumerate(data.values):
