@@ -9,7 +9,7 @@ import os
 
 class Database:
 
-    def __init__(self, action_column, trace_column, timestamp_column, uri, user, password):
+    def __init__(self, action_column, trace_column, timestamp_column): #, uri, user, password):
         self.latest_log = [None]
         self.level_of_abstraction = [-1]
         self.action_column = action_column

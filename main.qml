@@ -145,6 +145,9 @@ Window {
                                             value: 0
                                             to: 1
                                             stepSize: 1
+                                            onValueChanged: {
+                                                table_model.setDataFrame(bar.currentIndex, slider.value)
+                                            }
                                     }
 
                             }

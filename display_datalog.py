@@ -5,13 +5,16 @@ class DataFrameModel(QAbstractTableModel):
     DtypeRole = Qt.UserRole + 1000
     ValueRole = Qt.UserRole + 1001
 
-    def __init__(self, filename, separator, usecol, rows, parent=None):
+    def __init__(self, filename, separator, n_cols, rows, parent=None):
         super(DataFrameModel, self).__init__(parent)
-        self._dataframe = pd.read_csv(filename, sep=separator, usecols=usecol, nrows=rows)
+        self.n_cols = [*range(n_cols)]
+        self.rows = rows
+        self._dataframe = pd.read_csv(filename, sep=separator, usecols= range(n_cols), nrows=rows)
 
-    def setDataFrame(self, dataframe):
+    @Slot(int, int)
+    def setDataFrame(self, tab_index, slider_value):
         self.beginResetModel()
-        self._dataframe = dataframe.copy()
+        self._dataframe = pd.read_csv(f"tab{tab_index}/abstractions/Abstraction{slider_value}.csv", sep=",", usecols=self.n_cols, nrows=self.rows)
         self.endResetModel()
 
     def dataFrame(self):
@@ -26,7 +29,7 @@ class DataFrameModel(QAbstractTableModel):
                 return self._dataframe.columns[section]
             else:
                 return str(self._dataframe.index[section])
-        return None
+        return ""
 
     def rowCount(self, parent=QModelIndex()):
         if parent.isValid():

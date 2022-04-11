@@ -1,3 +1,4 @@
+from fileinput import filename
 from csv_reader import CSVReader
 from database import Database
 from directly_follows import DirectlyFollowsMetric
@@ -11,10 +12,10 @@ from PySide6.QtCore import QThread
 
 class AbstractionControl():
 
-    def __init__(self) -> None:
+    
+    def __init__(self, filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds, action_column, trace_column) -> None:
         self.csv_reader = CSVReader()
-        self.database = Database(
-            5, 0, 3, "bolt://localhost:7687", "neo4j", "password")
+        self.database = Database(action_column, trace_column, timestamp_column)#, "bolt://localhost:7687", "neo4j", "password")
         self.metrics = []
         self.predictor = None
         self.log_processor = None
@@ -23,12 +24,11 @@ class AbstractionControl():
         self.pair_we_are_at = 0
         self.sorted_pair_array = [[]]
         self.sorted_pair_labels = [[]]
-        #filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds
-        self.setUp()
+        self.setUp(filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds)
 
-    def setUp(self):
+    def setUp(self,filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds):
         self.database.increase_level_of_abstraction()
-        data = self.csv_reader.read_data("Data.csv", "%Y-%m-%dT%H:%M:%S.%f",  6, 8114, ";", 3, 26, False)
+        data = self.csv_reader.read_data(filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds)
         self.database.update_latest_log(data)
         # self.database.initiate_tree()
         self.log_processor = LogProcessor(self.database)
@@ -43,6 +43,7 @@ class AbstractionControl():
         print(
             f"Saving Process Model Abstraction {self.database.level_of_abstraction}")
         self.get_new_prediction()
+
 
     def reset(self):
         filename = f"tab{self.database.currenttab}/abstractions/Abstraction{self.database.level_of_abstraction[self.database.currenttab]}.csv"
