@@ -20,10 +20,29 @@ import QtQuick.Layouts
                         color: "red"
                     }
                     onClicked: { 
-                                console.log(bar.Item)
-                                var _removeItem = bar.itemAt(number);
-                                bar.removeItem(_removeItem);
-                                stackLayout.children[number].destroy()
+                                var tabs = bar.tabs;
+                                console.log(tabs.length)
+                                var newtabs = []
+                                for (var i = 0;i<tabs.length;i++){
+                                    console.log("hi")
+                                    console.log(tabs[i])
+                                    
+                                    if (tabs[i] == number){
+                                        console.log("jojo")
+                                        var _removeItem = bar.itemAt(i);
+                                        bar.removeItem(_removeItem);
+                                        stackLayout.children[i].destroy();
+                                        candidate_controller.deletetab(i)
+                                        
+                                    }else {
+                                        newtabs = newtabs.concat(tabs[i])
+                                    }
+                                }
+                                bar.deleted = bar.deleted + 1
+                                bar.tabs = newtabs
+                                console.log(bar.tabs)
+                                
+                                
                                 }
 
                 }

@@ -12,10 +12,10 @@ from PySide6.QtCore import QThread
 
 class AbstractionControl():
 
-    
     def __init__(self, filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds, action_column, trace_column) -> None:
         self.csv_reader = CSVReader()
-        self.database = Database(action_column, trace_column, timestamp_column)#, "bolt://localhost:7687", "neo4j", "password")
+        # , "bolt://localhost:7687", "neo4j", "password")
+        self.database = Database(action_column, trace_column, timestamp_column)
         self.metrics = []
         self.predictor = None
         self.log_processor = None
@@ -24,11 +24,13 @@ class AbstractionControl():
         self.pair_we_are_at = 0
         self.sorted_pair_array = [[]]
         self.sorted_pair_labels = [[]]
-        self.setUp(filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds)
+        self.setUp(filename, time_string, number_columns, number_rows,
+                   separator, timestamp_column, number_chars_timestamp, inseconds)
 
-    def setUp(self,filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds):
+    def setUp(self, filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds):
         self.database.increase_level_of_abstraction()
-        data = self.csv_reader.read_data(filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds)
+        data = self.csv_reader.read_data(filename, time_string, number_columns,
+                                         number_rows, separator, timestamp_column, number_chars_timestamp, inseconds)
         self.database.update_latest_log(data)
         # self.database.initiate_tree()
         self.log_processor = LogProcessor(self.database)
@@ -44,7 +46,6 @@ class AbstractionControl():
             f"Saving Process Model Abstraction {self.database.level_of_abstraction}")
         self.get_new_prediction()
 
-
     def reset(self):
         filename = f"tab{self.database.currenttab}/abstractions/Abstraction{self.database.level_of_abstraction[self.database.currenttab]}.csv"
         data = self.csv_reader.read_data(
@@ -53,17 +54,20 @@ class AbstractionControl():
 
     def get_new_prediction(self):
         self.predictor.predict_sum()
-        self.sorted_pair_array[self.database.currenttab], self.sorted_pair_labels[self.database.currenttab] = self.predictor.sort_results()
+        self.sorted_pair_array[self.database.currenttab], self.sorted_pair_labels[
+            self.database.currenttab] = self.predictor.sort_results()
 
     def abstract(self):
         self.database.increase_level_of_abstraction()
         set_of_actions = self.database.get_actions()
-        e1 = set_of_actions[self.sorted_pair_labels[self.database.currenttab][0, self.pair_we_are_at]]
-        e2 = set_of_actions[self.sorted_pair_labels[self.database.currenttab][1, self.pair_we_are_at]]
+        e1 = set_of_actions[self.sorted_pair_labels[self.database.currenttab]
+                            [0, self.pair_we_are_at]]
+        e2 = set_of_actions[self.sorted_pair_labels[self.database.currenttab]
+                            [1, self.pair_we_are_at]]
         nr_events_abstracted = self.log_processor.abstract_log(e1, e2, e1 + e2)
-        #print("1")
+        # print("1")
         self.log_processor.delete_repetitions()
-        #print("2")
+        # print("2")
         self.database.update_latest_log(
             self.database.latest_log[self.database.currenttab])
 
@@ -73,19 +77,20 @@ class AbstractionControl():
         #print(f"{self.database.events_deleted_last_abstraction} have been deleted")
 
         self.database.update_tree(e1, e2, e1 + e2)
-        #print("3")
+        # print("3")
         self.heuristic_miner.save_process_as_png(
             self.database.level_of_abstraction[self.database.currenttab])
-        #print("3")
+        # print("3")
         self.get_new_prediction()
-        #print("3")
+        # print("3")
         self.pair_we_are_at = 0
 
     def get_sorted_pair_labels(self):
         set_of_actions = self.database.get_actions()
         candidates = []
         for n in range(len(self.sorted_pair_labels[self.database.currenttab][0][:])):
-            candidates.append((set_of_actions[self.sorted_pair_labels[self.database.currenttab][0][n]], set_of_actions[self.sorted_pair_labels[self.database.currenttab][1][n]]))
+            candidates.append((set_of_actions[self.sorted_pair_labels[self.database.currenttab][0][n]],
+                              set_of_actions[self.sorted_pair_labels[self.database.currenttab][1][n]]))
         return candidates
 
     def add_metrics(self):
@@ -99,7 +104,7 @@ class AbstractionControl():
         self.pair_we_are_at = i
 
     def change_hyperparameters(self, metricslist):
-        #print(metricslist)
+        # print(metricslist)
         for metric in metricslist:
             for name in metric:
                 self.predictor.change_hyperparameter(name, metric[name])
@@ -111,6 +116,7 @@ class AbstractionControl():
         database = Database(
             4, 1, 2, "bolt://localhost:7687", "neo4j", "password")
     """
+
     def swap_candidates(self, tab):
         return self.sorted_pair_array[tab], self.sorted_pair_array[tab]
 
@@ -119,3 +125,8 @@ class AbstractionControl():
         self.sorted_pair_array.append(self.sorted_pair_array[0])
         self.sorted_pair_labels.append(self.sorted_pair_labels[0])
         self.database.newTab(tab)
+
+    def deletetab(self, tab):
+        self.sorted_pair_array.pop(tab)
+        self.sorted_pair_labels.pop(tab)
+        self.database.deletetab(tab)

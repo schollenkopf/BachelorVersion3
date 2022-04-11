@@ -21,58 +21,63 @@ Rectangle{
 
     Column {
 
-        anchors.fill: parent
-        Row {
-            id: tabbarrow
-            height: 20
-            anchors {
-                left: parent.left
-                right: parent.right
-            }
-            TabBar {
-                id: bar
-                width: parent.width - 50
-                TabButton {
-                    text: qsTr("Original")
-                }
-                onCurrentIndexChanged: {
-                    bi.running = true
-                    mergeButton.enabled = false
-                    reculateButton.enabled = false
-                    list.model.removeRows(0, list.model.rowCount() - 1);
-                    candidate_controller.changedtab(bar.currentIndex, [{"Median": firstMetricSlider.value}, {"Stdev": secondMetricSlider.value}, {"Direclty Follows Order=false": thirdMetricSlider.value}])
+                        
+                            anchors.fill: parent
+                            Row {
+                                id: tabbarrow
+                                height: 20
+                                anchors {
+                                left: parent.left
+                                right: parent.right
+                            }
+                                TabBar {
+                                    property variant tabs: [0]
+                                    property int deleted: 0
+                                    id: bar
+                                    width: parent.width - 50
+                                    TabButton {
+                                        text: qsTr("Original")
+                                    }
+                                    onCurrentIndexChanged:{ 
+                                        bi.running = true
+                                        mergeButton.enabled = false
+                                        reculateButton.enabled = false
+                                        list.model.removeRows(0, list.model.rowCount() - 1);
+                                        candidate_controller.changedtab(bar.currentIndex,[{"Median": firstMetricSlider.value},{"Stdev":secondMetricSlider.value},{"Direclty Follows Order=false":thirdMetricSlider.value}])
+                                        
+                                    }
+                                    
+                                }
+                                Rectangle {
+                                                    width: 50
+                                                    anchors{
+                                                        top:parent.top
+                                                        bottom:parent.bottom
+                                                    }
+                                                    Button {
+                                                        id: splitUpButton
+                                                        anchors.fill: parent
+                                                        onClicked: {
+                                                            var tabbut = tabbutton.createObject(bar, {number: bar.count + bar.deleted, text: "Tab " + (bar.count + bar.deleted)});
+                                                            var tab = abstab.createObject(stackLayout);
+                                                            
+                                                            bar.tabs = bar.tabs.concat(bar.count + bar.deleted - 1)
+                                                            console.log(bar.tabs)
+                                                            candidate_controller.addTab(bar.count-1,[{"Median": firstMetricSlider.value},{"Stdev":secondMetricSlider.value},{"Direclty Follows Order=false":thirdMetricSlider.value}]);
+                                                            bar.addItem(tabbut);
+                                                            stackLayout.addItem(tab);
 
-                }
+                                                        }
+                                                        Text {
+                                                            
+                                                            anchors.centerIn: parent
+                                                            text: "+"
+                                                            color: "black"
+                                                            font.pixelSize: 20
+                                                        }
+                                                    }
+                                                }
 
-            }
-            Rectangle {
-                width: 50
-                anchors{
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                Button {
-                    id: splitUpButton
-                    anchors.fill: parent
-                    onClicked: {
-                        var tabbut = tabbutton.createObject(bar, {number: bar.count, text: "Tab " + bar.count});
-                        var tab = abstab.createObject(stackLayout);
-
-
-                        candidate_controller.addTab(bar.count-1, [{"Median": firstMetricSlider.value}, {"Stdev": secondMetricSlider.value}, {"Direclty Follows Order=false": thirdMetricSlider.value}]);
-                        bar.addItem(tabbut);
-                        stackLayout.addItem(tab);
-
-                    }
-                    Text {
-
-                        anchors.centerIn: parent
-                        text: "+"
-                        color: "black"
-                        font.pixelSize: 20
-                    }
-                }
-            }
 
         }
 
