@@ -98,3 +98,9 @@ class CandidateController(QObject):
         self.tabchanger()
         print("Now on tab: ", newtab)
         print(self.hyperparams)
+
+    @Slot(int)
+    def deletetab(self, tab):
+        print(tab)
+        self.hyperparams.pop(tab)
+        self.abstraction_controller.deletetab(tab)

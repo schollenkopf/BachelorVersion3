@@ -30,6 +30,8 @@ Component {
                                 right: parent.right
                             }
                                 TabBar {
+                                    property variant tabs: [0]
+                                    property int deleted: 0
                                     id: bar
                                     width: parent.width - 50
                                     TabButton {
@@ -55,10 +57,11 @@ Component {
                                                         id: splitUpButton
                                                         anchors.fill: parent
                                                         onClicked: {
-                                                            var tabbut = tabbutton.createObject(bar, {number: bar.count, text: "Tab " + bar.count});
+                                                            var tabbut = tabbutton.createObject(bar, {number: bar.count + bar.deleted, text: "Tab " + (bar.count + bar.deleted)});
                                                             var tab = abstab.createObject(stackLayout);
                                                             
-                                                            
+                                                            bar.tabs = bar.tabs.concat(bar.count + bar.deleted - 1)
+                                                            console.log(bar.tabs)
                                                             candidate_controller.addTab(bar.count-1,[{"Median": firstMetricSlider.value},{"Stdev":secondMetricSlider.value},{"Direclty Follows Order=false":thirdMetricSlider.value}]);
                                                             bar.addItem(tabbut);
                                                             stackLayout.addItem(tab);

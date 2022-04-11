@@ -1,6 +1,7 @@
 
 
 #from neo4j import GraphDatabase
+from operator import truediv
 from pathlib import Path
 import graphviz
 import shutil
@@ -9,7 +10,8 @@ import os
 
 class Database:
 
-    def __init__(self, action_column, trace_column, timestamp_column): #, uri, user, password):
+    # , uri, user, password):
+    def __init__(self, action_column, trace_column, timestamp_column):
         self.latest_log = [None]
         self.level_of_abstraction = [-1]
         self.action_column = action_column
@@ -83,7 +85,7 @@ class Database:
         print("one")
         self.build_abstraction_tree(
             e1, e2, self.level_of_abstraction[self.currenttab])
-        #print(self.abstraction_tree_string[self.currenttab])
+        # print(self.abstraction_tree_string[self.currenttab])
         self.generate_tree()
         """
         with self.driver.session() as session:
@@ -125,7 +127,7 @@ class Database:
         cut_file = text_file.read()
         cut_file = cut_file[16:]
         self.abstraction_tree_string[self.currenttab] = cut_file[:-2]
-        #print(self.abstraction_tree_string)
+        # print(self.abstraction_tree_string)
         text_file.close()
 
     def newTab(self, tabid):
@@ -137,3 +139,22 @@ class Database:
         if (os.path.isdir(tree_dst)):
             shutil.rmtree(tree_dst)
         shutil.copytree(tree_src, tree_dst)
+
+    def deletetab(self, tab):
+        self.level_of_abstraction.pop(tab)
+        self.latest_log.pop(tab)
+        self.abstraction_tree_string.pop(tab)
+        folder = "tab0"
+
+        num = 0
+        found_folder = False
+        while (os.path.isdir(folder)):
+            print(folder)
+            if num == tab:
+                shutil.rmtree(folder)
+                found_folder = True
+            elif found_folder:
+                new_name = "tab" + str(num-1)
+                os.rename(folder, new_name)
+            num = num + 1
+            folder = "tab" + str(num)
