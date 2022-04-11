@@ -1,4 +1,5 @@
 from hashlib import new
+from abstraction_control import AbstractionControl
 from abstraction_worker import AbstractionWorker, UpdateCandidatesWorker
 from PySide6.QtCore import Slot, QObject, QThread, Signal
 
@@ -7,9 +8,9 @@ from database import Database
 
 class CandidateController(QObject):
 
-    def __init__(self, abstraction_controller) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.abstraction_controller = abstraction_controller
+        self.abstraction_controller = None
         self.thread = None
         self.worker = None
         self.thread2 = None
@@ -19,6 +20,10 @@ class CandidateController(QObject):
     updated = Signal(list, int, str, int)
 
     tabchanged = Signal(int, float, float, float)
+
+    @Slot(str, str, int, int, str, int, int, bool, int, int)
+    def init_abstraction_controller(self, filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds, action_column, trace_column):
+        self.abstraction_controller = AbstractionControl(filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds, action_column, trace_column)
 
     @Slot()
     def updater(self):
