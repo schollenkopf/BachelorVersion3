@@ -6,7 +6,7 @@ import "constants.js" as JS
 
 Rectangle{
     anchors.fill: parent
-
+    color: JS.background
     Component {
         id: tabbutton
         TabWithClose { }
@@ -55,10 +55,11 @@ Rectangle{
                                                         bottom:parent.bottom
                                                     }
                                                     Button {
+                                                        
                                                         id: splitUpButton
                                                         anchors.fill: parent
                                                         onClicked: {
-                                                            var tabbut = tabbutton.createObject(bar, {number: bar.count + bar.deleted, text: "Tab " + (bar.count + bar.deleted)});
+                                                            var tabbut = tabbutton.createObject(bar, {number: bar.count + bar.deleted, name: "Tab " + (bar.count + bar.deleted)});
                                                             var tab = abstab.createObject(stackLayout);
                                                             
                                                             bar.tabs = bar.tabs.concat(bar.count + bar.deleted - 1)
@@ -98,8 +99,9 @@ Rectangle{
                 }
                 width: parent.width - 250
                 Rectangle{
+                    color: JS.background
                     id: titlRectangle
-                    height: 0.1 * parent.height
+                    height: 0.05 * parent.height
                     anchors{
                         left: parent.left
                         right: parent.right
@@ -114,7 +116,8 @@ Rectangle{
 
                 Rectangle{
                     id: topRowRectangle
-                    height: 0.1 * parent.height
+                    height: 0.15 * parent.height
+                    color: JS.background
                     anchors{
                         left: parent.left
                         right: parent.right
@@ -125,7 +128,8 @@ Rectangle{
                         anchors.fill: parent
 
                         Rectangle {
-                            width: 0.8 * parent.width
+                            color: JS.background
+                            width: 0.7 * parent.width
                             id: sliderRectangle
                             anchors{
                                 top: parent.top
@@ -161,7 +165,8 @@ Rectangle{
 
 
                         Rectangle {
-                            width: 0.2 * parent.width
+                            color: JS.background
+                            width: 0.3 * parent.width
                             anchors{
                                 top: parent.top
                                 bottom: parent.bottom
@@ -181,49 +186,106 @@ Rectangle{
                                 anchors.fill: parent
                                 property int position: 0
                                 Button {
-
+                                    
                                     id: pm_button
                                     anchors{
                                         top: parent.top
                                         bottom: parent.bottom
                                     }
                                     width: parent.width * 0.34
-                                    Text{
-                                        text: "PM"
-                                    }
+                                    background: Rectangle {
+                                    radius: 5
+                                anchors.fill: parent
+                                color: JS.button
+                                
+                                }
+                                icon.name: "table"
+                                icon.source: "icons/process.png"
+                                icon.width: 50 
+                                icon.height: 50
+                                
 
+                                icon.color: if (mySwitch.position == 0){
+                                    JS.selected
+                                }
+                                    else if (pm_button.hovered) {
+                                        JS.iconhovered
+                                    }else {
+                                        JS.icon
+                                    }
                                     onClicked: {
                                         mySwitch.position = 0
                                     }
                                 }
                                 Button {
-
+                                    
                                     id: at_button
                                     anchors{
                                         top: parent.top
                                         bottom: parent.bottom
                                     }
                                     width: parent.width * 0.33
-                                    Text{
-                                        text: "AT"
+                                    
+                                    background: Rectangle {
+                                    radius: 5
+                                anchors.fill: parent
+                                color: JS.button
+                                
+                                }
+                                icon.name: "tree"
+                                icon.source: "icons/tree.webp"
+                                icon.width: 50 
+                                icon.height: 30
+                                
+
+                                icon.color: if (mySwitch.position == 1){
+                                    JS.selected
+                                }
+                                    else if (at_button.hovered) {
+                                        JS.iconhovered
+                                    }else {
+                                        JS.icon
                                     }
 
                                     onClicked: {
                                         mySwitch.position = 1
                                     }
                                 }
+                                 
                                 Button {
-
+                                    
                                     id: dl_button
+                                    
                                     anchors{
                                         top: parent.top
                                         bottom: parent.bottom
                                     }
                                     width: parent.width * 0.33
-                                    Text{
-                                        text: "DL"
+                                    background: Rectangle {
+                                    radius: 5
+                                anchors.fill: parent
+                                color: JS.button
+                                
+                                
+                                }
+                                icon.name: "table"
+                                icon.source: "icons/tablegimp.png"
+                                icon.width: 50 
+                                icon.height: 50
+                                icon.color: if (mySwitch.position == 2){
+                                    JS.selected
+                                }
+                                    else if (dl_button.hovered) {
+                                        JS.iconhovered
+                                    }else {
+                                        JS.icon
                                     }
-
+                                
+                                    
+                                
+                                //dl_button.hovered? JS.iconhovered : JS.icon
+                                
+                                
                                     onClicked: {
                                         mySwitch.position = 2
                                     }
@@ -238,6 +300,7 @@ Rectangle{
 
 
                 Rectangle{
+                    color: JS.background
                     height: 0.75 * parent.height
                     anchors {
                         left: parent.left
@@ -262,7 +325,7 @@ Rectangle{
 
 
             Rectangle {
-
+                color: JS.background
                 id: rightColumnRectangle
                 anchors{
                     top: mainRow.top
@@ -277,7 +340,7 @@ Rectangle{
 
 
                     Rectangle{
-
+                        color: JS.background
                         anchors {
                             left: rightColumn.left
                             right: rightColumn.right
@@ -299,8 +362,9 @@ Rectangle{
                                 }
                                 height: 0.85 * parent.height
                                 id: listRectangle
-
+                                color: JS.background
                                 ListView {
+                                    
                                     id: list
                                     model: candidate_list_model
                                     anchors.fill: parent
@@ -330,16 +394,17 @@ Rectangle{
 
 
                                 }
-                                highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
+                                highlight: Rectangle { color: JS.highlight; radius: 5 }
                                 focus: true
                                 ScrollBar.vertical: vbar
 
                                 ScrollBar {
+                                    
                                     id: vbar
                                     hoverEnabled: true
                                     active: hovered || pressed
                                     orientation: Qt.Vertical
-                                    //size: listRectangle.height / ((list.model.rowCount() + 1) * 40)
+                                
                                     anchors.top: parent.top
                                     anchors.right: parent.right
                                     anchors.bottom: parent.bottom
@@ -357,7 +422,7 @@ Rectangle{
                         }
 
                         Rectangle {
-
+                            color: JS.background
                             id: mergeButtonRectangle
                             anchors {
                                 left: mergeColumn.left
@@ -366,14 +431,20 @@ Rectangle{
                             height: 0.15 * parent.height
 
                             Button {
-
+                                
+                                
                                 id: mergeButton
                                 anchors.fill: parent
+                                background: Rectangle {
+                                    radius: 5
+                                anchors.fill: parent
+                                color: JS.button
                                 Text{
                                     anchors.centerIn: parent
                                     text: "MERGE"
                                     color: JS.textColor
                                     font.pixelSize: 30
+                                }
                                 }
                                 onClicked: {
                                     bi.running = true;
@@ -403,6 +474,7 @@ Rectangle{
                         id: predictorColumn
 
                         Rectangle {
+                            color: JS.background
                             id: metricsBoundingRectangle
                             anchors {
                                 left: predictorColumn.left
@@ -426,6 +498,7 @@ Rectangle{
                                         anchors.fill: parent
 
                                         Rectangle {
+                                            color: JS.background
                                             width: 150
                                             id: firstMetricSliderRectangle
                                             anchors {
@@ -445,6 +518,7 @@ Rectangle{
                                         }
 
                                         Rectangle{
+                                            color: JS.background
                                             width: 150
                                             id: firstMetricTextRectangle
                                             anchors {
@@ -464,6 +538,7 @@ Rectangle{
 
                                 Rectangle {
                                     id: secondMetric
+                                    color: JS.background
                                     anchors {
                                         left: metricsColumn.left
                                         right: metricsColumn.right
@@ -475,6 +550,7 @@ Rectangle{
 
                                         Rectangle {
                                             width: 150
+                                            color: JS.background
                                             id: secondMetricSliderRectangle
                                             anchors {
                                                 top: secondMetricRow.top
@@ -494,6 +570,7 @@ Rectangle{
 
                                         Rectangle{
                                             width: 150
+                                            color: JS.background
                                             id: secondMetricTextRectangle
                                             anchors {
                                                 top: secondMetricRow.top
@@ -512,6 +589,7 @@ Rectangle{
 
                                 Rectangle {
                                     id: thirdMetric
+                                    color: JS.background
                                     anchors {
                                         left: metricsColumn.left
                                         right: metricsColumn.right
@@ -523,6 +601,7 @@ Rectangle{
 
                                         Rectangle {
                                             width: 150
+                                            color: JS.background
                                             id: thirdMetricSliderRectangle
                                             anchors {
                                                 top: thirdMetricRow.top
@@ -542,6 +621,7 @@ Rectangle{
 
                                         Rectangle{
                                             width: 150
+                                            color: JS.background
                                             id: thirdMetricTextRectangle
                                             anchors {
                                                 top: thirdMetricRow.top
@@ -567,6 +647,7 @@ Rectangle{
                                 left: predictorColumn.left
                                 right: predictorColumn.right
                             }
+                            color: JS.background
                             height: 0.1 * parent.height
                             Button {
                                 id: reculateButton
@@ -580,13 +661,19 @@ Rectangle{
                                     slider.to = slider.value
 
                                 }
-
+                                background: Rectangle {
+                                    radius: 5
+                                anchors.fill: parent
+                                color: JS.button
                                 Text{
                                     anchors.centerIn: parent
                                     text: "RECALCULATE"
-                                    color: "black"
+                                    color: JS.textColor
                                     font.pixelSize: 30
                                 }
+                                }
+
+                                
                             }
                         }
 

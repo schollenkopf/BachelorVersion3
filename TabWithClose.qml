@@ -2,22 +2,59 @@ import QtQuick
 import QtQuick.Controls 
 import QtQuick.Window
 import QtQuick.Layouts
+import "constants.js" as JS
 
 
 
 
-
+    
     TabButton   {
                 property int number
-                    
+                property string name
+                background: Row {
+
+
+                anchors.fill: parent
+                Rectangle {
+                        width: parent.width - 5
+                        anchors {
+                            top: parent.top
+                            bottom: parent.bottom
+                        }
+                        color: enabled? JS.selectedtab : JS.unselectedtab
+                        
+                    }
+                Rectangle {
+                    width: 5
+                        anchors {
+                            top: parent.top
+                            bottom: parent.bottom
+                        }
+                        color: "white"
+
+                }
+                }
+                contentItem: Text {
+                    text: parent.name
+                    color: JS.textColor
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                }
+                
                 Button {
+                    height: parent.height
                     anchors {
                         right: parent.right
                     }
-                    Text {
+                    background: Rectangle {
+                        anchors.fill: parent
+                        color: enabled? JS.selectedtab : JS.unselectedtab
+                    }
+                    contentItem: Text {
                         anchors.centerIn: parent
-                        text:"X"
-                        color: "red"
+                        text:"X |"
+                        color: JS.textColor
                     }
                     onClicked: { 
                                 var tabs = bar.tabs;

@@ -10,7 +10,7 @@ import "constants.js" as JS
 
 Rectangle {
 
-                        
+                        color: JS.background
                         id: leftColumnRectangle
                         
                         
