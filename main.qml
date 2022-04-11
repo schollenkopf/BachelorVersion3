@@ -12,8 +12,8 @@ Window {
     id: mainWindow
 
     Component {
-        id: tabButton
-        TabButton { }
+        id: tabbutton
+        TabWithClose { }
     }
     
 
@@ -59,7 +59,7 @@ Window {
                                                         id: splitUpButton
                                                         anchors.fill: parent
                                                         onClicked: {
-                                                            var tabbut = tabButton.createObject(bar, {text: "Tab " + bar.count});
+                                                            var tabbut = tabbutton.createObject(bar, {number: bar.count, text: "Tab " + bar.count});
                                                             var tab = abstab.createObject(stackLayout);
                                                             
                                                             
