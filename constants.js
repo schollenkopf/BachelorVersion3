@@ -12,6 +12,12 @@ var selected = "white"
 
 var unselectedtab = "#FF252526"
 var selectedtab = "#FF1B1B1C"
+var heightButtonInputPage = 50
+var inputTextHeight = 20
+var inputQuestionTextHeight = 10
+var colorInText = "#aaaaaa"
+var colorQuesText = "#aaaaaa"
+var inputBackColor = "#cccccc"
 
 
 //"#FF2D2D30"
