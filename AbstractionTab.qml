@@ -28,6 +28,8 @@ Rectangle {
                             anchors.fill: parent
                             source: "tab"+bar.currentIndex+"/abstraction_tree/abstraction_tree"+slider.value+".png"
                         }
+
+                        
                         
 
                         TableView {

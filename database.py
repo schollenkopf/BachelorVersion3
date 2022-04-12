@@ -29,7 +29,8 @@ class Database:
     def init_abstraction_tree_string(self):
         initial_string = ""
         for action in self.get_actions():
-            initial_string = initial_string + action + ";"
+            initial_string = initial_string + action + \
+                "[color = white; fontcolor = white];"
         self.abstraction_tree_string[self.currenttab] = initial_string
 
     def update_latest_log(self, data):
@@ -96,16 +97,18 @@ class Database:
         """
 
     def build_abstraction_tree(self, e1, e2, level_of_abstraction):
+        self.abstraction_tree_string[self.currenttab] = self.abstraction_tree_string[self.currenttab] + \
+            e1 + e2 + "[color = white; fontcolor = white];"
         self.abstraction_tree_string[self.currenttab] = self.abstraction_tree_string[self.currenttab] + e1 + "->" + e1 + e2 + \
-            "[label = " + str(level_of_abstraction) + "]" + ";"
+            "[label = " + str(level_of_abstraction) + ";color = white;fontcolor = white]" + ";"
         self.abstraction_tree_string[self.currenttab] = self.abstraction_tree_string[self.currenttab] + e2 + "->" + e1 + e2 + \
-            "[label = " + str(level_of_abstraction) + "]" + ";"
+            "[label = " + str(level_of_abstraction) + ";color = white;fontcolor = white]" + ";"
 
     def generate_tree(self):
         name = f"abstraction_tree{self.level_of_abstraction[self.currenttab]}"
 
         dot = graphviz.Source(
-            'digraph "tree" { ' + self.abstraction_tree_string[self.currenttab] + '}', name)
+            'digraph "tree" { bgcolor="transparent"' + self.abstraction_tree_string[self.currenttab] + '}', name)
         dot.format = 'png'
         dir = f"tab{self.currenttab}/abstraction_tree/"
         dot.render(directory=dir)
@@ -123,9 +126,9 @@ class Database:
         abstraction_tree_file_name = f"tab{self.currenttab}/abstraction_tree/abstraction_tree" + \
             str(self.level_of_abstraction[self.currenttab])
         text_file = open(abstraction_tree_file_name, "r")
-
+# 16 + 21
         cut_file = text_file.read()
-        cut_file = cut_file[16:]
+        cut_file = cut_file[38:]
         self.abstraction_tree_string[self.currenttab] = cut_file[:-2]
         # print(self.abstraction_tree_string)
         text_file.close()

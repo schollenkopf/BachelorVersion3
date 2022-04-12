@@ -29,14 +29,32 @@ Rectangle{
                                 anchors {
                                 left: parent.left
                                 right: parent.right
+                                
                             }
                                 TabBar {
                                     property variant tabs: [0]
                                     property int deleted: 0
                                     id: bar
                                     width: parent.width - 50
+                                    background: Rectangle {
+                                        color: JS.tabborder
+                                    }
                                     TabButton {
-                                        text: qsTr("Original")
+                                        contentItem: Text {
+                                                                text: "Original"
+                                                                color: JS.textColor
+                                                                horizontalAlignment: Text.AlignHCenter
+                                                                
+                                                            }
+                                        background: Rectangle {
+                                                                width: parent.width - 5
+                                                                anchors {
+                                                                    top: parent.top
+                                                                    bottom: parent.bottom
+                                                                }
+                                                                color: bar.tabs[bar.currentIndex] == 0 ? JS.selectedtab : JS.unselectedtab
+                                        }
+                      
                                     }
                                     onCurrentIndexChanged:{ 
                                         bi.running = true
@@ -50,12 +68,16 @@ Rectangle{
                                 }
                                 Rectangle {
                                                     width: 50
+                                                    
+                                                            
                                                     anchors{
                                                         top:parent.top
                                                         bottom:parent.bottom
                                                     }
                                                     Button {
-                                                        
+                                                        background: Rectangle {
+                                                        color: JS.selectedtab
+                                                        }
                                                         id: splitUpButton
                                                         anchors.fill: parent
                                                         onClicked: {
@@ -73,7 +95,7 @@ Rectangle{
                                                             
                                                             anchors.centerIn: parent
                                                             text: "+"
-                                                            color: "black"
+                                                            color: JS.iconhovered
                                                             font.pixelSize: 20
                                                         }
                                                     }
