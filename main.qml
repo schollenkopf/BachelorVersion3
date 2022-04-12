@@ -397,7 +397,7 @@ Window {
                         anchors.verticalCenter: parent.verticalCenter
 
                         focus: true
-                        text: "%Y-%m-%dT%H: %M: %S.%f"
+                        text: "%Y-%m-%dT%H:%M:%S.%f"
                         anchors.left: parent.left
                         anchors.leftMargin: 10
                         color: JS.colorInText
