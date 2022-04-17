@@ -15,7 +15,7 @@ class AbstractionControl():
     def __init__(self, filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds, action_column, trace_column) -> None:
         self.csv_reader = CSVReader()
         # , "bolt://localhost:7687", "neo4j", "password")
-        self.database = Database(action_column, trace_column, timestamp_column)
+        self.database = Database(number_columns, trace_column, timestamp_column)
         self.metrics = []
         self.predictor = None
         self.log_processor = None
@@ -24,13 +24,28 @@ class AbstractionControl():
         self.pair_we_are_at = 0
         self.sorted_pair_array = [[]]
         self.sorted_pair_labels = [[]]
-        self.setUp(filename, time_string, number_columns, number_rows,
-                   separator, timestamp_column, number_chars_timestamp, inseconds)
+        #self.setUp(filename, time_string, number_columns, number_rows,
+        #           separator, timestamp_column, number_chars_timestamp, inseconds)
+        self.filename = filename
+        self.time_string = time_string
+        self.number_columns = number_columns
+        self.number_rows = number_rows
+        self.separator = separator
+        self.timestamp_column = timestamp_column
+        self.number_chars_timestamp = number_chars_timestamp
+        self.trace_column = trace_column
+        self.inseconds = inseconds
 
-    def setUp(self, filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds):
+    def preSetUp(self):
+        data = self.csv_reader.read_data(self.filename, self.time_string, self.number_columns,
+                                         self.number_rows, self.separator, self.timestamp_column, self.number_chars_timestamp, self.inseconds)
+        self.number_columns += 1
+        return data
+
+    def setUp(self, data):
         self.database.increase_level_of_abstraction()
-        data = self.csv_reader.read_data(filename, time_string, number_columns,
-                                         number_rows, separator, timestamp_column, number_chars_timestamp, inseconds)
+        #data = self.csv_reader.read_data(filename, time_string, number_columns,
+        #                                 number_rows, separator, timestamp_column, number_chars_timestamp, inseconds)
         self.database.update_latest_log(data)
         # self.database.initiate_tree()
         self.log_processor = LogProcessor(self.database)
@@ -49,7 +64,7 @@ class AbstractionControl():
     def reset(self):
         filename = f"tab{self.database.currenttab}/abstractions/Abstraction{self.database.level_of_abstraction[self.database.currenttab]}.csv"
         data = self.csv_reader.read_data(
-            filename, "%S.%f",  6, 8114, ",", 3, 26, True)
+            filename, "%S.%f",  self.number_columns, self.number_rows, ",", self.timestamp_column, self.number_chars_timestamp, True)
         self.database.reset(data)
 
     def get_new_prediction(self):

@@ -472,9 +472,12 @@ Window {
                 enabled: false
                 onClicked: {
                     candidate_controller.init_abstraction_controller(fileDialog.selectedFile, timestampStringInput.text, numColsInput.text, numRowsInput.text, separatorInput.text, timestampColIndex.text, charsTimeInput.text, false, actionColIndex.text, traceColIndex.text)
-                    table_model.first_setUp(6, 8114)
-                    ld.source="AbstractionPage.qml"
-                    candidate_controller.updater()
+                    //table_model.first_setUp(6, 8114)
+                    ld.source="PreprocessPage.qml"
+                    manager.initialise_data()
+                    //manager.draw_scatter("timestamp",true,"type",false,1000,600)
+                    //candidate_controller.updater()
+                    
                 }
             }
 
