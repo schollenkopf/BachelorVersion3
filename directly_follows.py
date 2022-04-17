@@ -8,7 +8,13 @@ class DirectlyFollowsMetric(Metric):
         self.order_matters = order_matters
 
     def get_name(self) -> str:
-        return f"Direclty Follows Order={self.order_matters}"
+        return f"DirecltyFollowsOrder={self.order_matters}"
+
+    def get_nikname(self) -> str:
+        if self.order_matters:
+            return "DFO"
+        else:
+            return "DFNO"
 
     def get_metric(self) -> numpy.ndarray:
 
@@ -32,11 +38,10 @@ class DirectlyFollowsMetric(Metric):
 
                 previous_action = current_action
 
-        directly_followed_sum = directly_followed_sum / \
-            numpy.maximum(directly_followed_sum.sum(axis=0), 1.0e-8)
+        directly_followed_sum = directly_followed_sum / (self.max(directly_followed_sum) - numpy.min(directly_followed_sum))
+            #numpy.maximum(directly_followed_sum.sum(axis=0).sum(), 1.0e-8)
         # if (not(self.order_matters)):
         #   directly_followed_sum *= 2
-
         directly_followed_sum = 1 - directly_followed_sum
 
         return directly_followed_sum

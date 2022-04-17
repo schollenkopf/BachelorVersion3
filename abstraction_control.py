@@ -1,4 +1,3 @@
-from fileinput import filename
 from csv_reader import CSVReader
 from database import Database
 from directly_follows import DirectlyFollowsMetric
@@ -34,7 +33,7 @@ class AbstractionControl():
         self.database.update_latest_log(data)
         # self.database.initiate_tree()
         self.log_processor = LogProcessor(self.database)
-        self.log_processor.delete_repetitions()
+        #self.log_processor.delete_repetitions()
         self.heuristic_miner = HeuristicMiner(self.database)
         self.add_metrics()
         self.predictor = Predictor(self.metrics, self.database)
@@ -58,16 +57,20 @@ class AbstractionControl():
             self.database.currenttab] = self.predictor.sort_results()
 
     def abstract(self):
+        print("init Abstract")
         self.database.increase_level_of_abstraction()
         set_of_actions = self.database.get_actions()
         e1 = set_of_actions[self.sorted_pair_labels[self.database.currenttab]
                             [0, self.pair_we_are_at]]
         e2 = set_of_actions[self.sorted_pair_labels[self.database.currenttab]
                             [1, self.pair_we_are_at]]
+        print("renaming")
         nr_events_abstracted = self.log_processor.abstract_log(e1, e2, e1 + e2)
         # print("1")
-        self.log_processor.delete_repetitions()
+        print("seleting repetitions")
+        # self.log_processor.delete_repetitions()
         # print("2")
+        print("updating_latest_log")
         self.database.update_latest_log(
             self.database.latest_log[self.database.currenttab])
 
@@ -89,16 +92,27 @@ class AbstractionControl():
         set_of_actions = self.database.get_actions()
         candidates = []
         for n in range(len(self.sorted_pair_labels[self.database.currenttab][0][:])):
-            candidates.append((set_of_actions[self.sorted_pair_labels[self.database.currenttab][0][n]],
-                              set_of_actions[self.sorted_pair_labels[self.database.currenttab][1][n]]))
+            metrics_string = ""
+            for m, metric in enumerate(self.metrics):
+                metrics_string = metrics_string + metric.get_nikname() + f": {round(self.sorted_pair_array[self.database.currenttab][m][n], 3)} "
+            candidate = (set_of_actions[self.sorted_pair_labels[self.database.currenttab][0][n]], set_of_actions[self.sorted_pair_labels[self.database.currenttab][1][n]], metrics_string)
+            
+            candidates.append(candidate)
         return candidates
 
     def add_metrics(self):
         time_distance_stdev = TimeDistanceStdev(self.database)
         time_distance_median = TimeDistanceMedian(self.database)
         directly_follows = DirectlyFollowsMetric(self.database, False)
+        directly_follows_2 = DirectlyFollowsMetric(self.database, True)
         self.metrics = [directly_follows,
-                        time_distance_median, time_distance_stdev]
+                        time_distance_median, time_distance_stdev, directly_follows_2]
+
+    def get_metrics_list(self):
+        metrics_list = []
+        for metric in self.metrics:
+            metrics_list.append((metric.get_name(), self.predictor.hyperparameters[metric.get_name()]))
+        return metrics_list
 
     def set_pair_we_are_at(self, i):
         self.pair_we_are_at = i

@@ -17,8 +17,9 @@ class CSVReader:
         return data.sort_values(data.columns[timestamp_column], axis=0)
 
     def convert_to_seconds(self, time, time_string, number_chars_timestamp):
-        return datetime.datetime.strptime(
-            time[0:number_chars_timestamp], time_string).timestamp()
+        t = datetime.datetime.strptime(time[0:number_chars_timestamp], time_string)
+        final_t = (t - datetime.datetime(1900, 1, 1)) / datetime.timedelta(seconds=1)
+        return final_t
 
     def convert_to_datatime(self, time, time_string):
         return datetime.datetime.fromtimestamp(time).strftime(time_string)

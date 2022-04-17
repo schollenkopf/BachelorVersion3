@@ -1,12 +1,6 @@
 from PySide6.QtCore import (QAbstractListModel, QModelIndex, Qt, Slot)
-"""
-from PySide6.QtQml import QmlElement
 
-QML_IMPORT_NAME = "CandidateListModel"
-QML_IMPORT_MAJOR_VERSION = 1
-
-@QmlElement"""
-class CandidateListModel(QAbstractListModel):
+class MetricsListModel(QAbstractListModel):
 
     MetricsRole = Qt.UserRole + 1
 
@@ -16,7 +10,7 @@ class CandidateListModel(QAbstractListModel):
 
     def roleNames(self):
         default = super().roleNames()
-        default[CandidateListModel.MetricsRole] = b"metricsrole"
+        default[MetricsListModel.MetricsRole] = b"valuemetric"
         return default
 
     @Slot(result=int)
@@ -29,30 +23,23 @@ class CandidateListModel(QAbstractListModel):
         elif not index.isValid():
             ret = None
         elif role ==  Qt.DisplayRole:
-            ret = self.db[index.row()]["text"]
-        elif role == CandidateListModel.MetricsRole:
-            ret = self.db[index.row()]["metrics"]
+            ret = self.db[index.row()]["name"]
+        elif role == MetricsListModel.MetricsRole:
+            ret = self.db[index.row()]["valuemetric"]
         else:
             ret = None
         return ret
-    """
-    def setData(self, index, value, role):
-        if not index.isValid():
-            return False
-        if role == Qt.EditRole:
-            self.db[index.row()]["text"] = value
-        return True"""
 
     @Slot(int, int, list, result=bool)
-    def insertRows(self, row: int, count, new_candidates, index=QModelIndex()):
+    def insertRows(self, row: int, count, metrics, index=QModelIndex()):
         #Insert n rows (n = 1 + count)  at row
 
         self.beginInsertRows(QModelIndex(), row, row + count)
 
         # start database work
-        for i, (e1, e2, metrics) in enumerate(new_candidates):  # at least one row
+        for i, (name, value) in enumerate(metrics):  # at least one row
             self.db.insert(
-                row + i, {"text": e1 + "-" + e2, "metrics": metrics}
+                row + i, {"name": name, "valuemetric": round(value, 2)}
             )
         # end database work
         self.endInsertRows()
@@ -64,7 +51,4 @@ class CandidateListModel(QAbstractListModel):
          self.db = self.db[:row] + self.db[row + count + 1 :]
          self.endRemoveRows()
          return True
-
-
-
 

@@ -12,6 +12,9 @@ class TimeDistanceMedian(TimeDistance):
 
     def get_name(self) -> str:
         return "Median"
+
+    def get_nikname(self) -> str:
+        return "Med"
     
     def get_metric(self):
         all_times = self.get_time_between_events()
@@ -22,4 +25,4 @@ class TimeDistanceMedian(TimeDistance):
                 
                 medians[a1, a2] = stat.median(all_times[a1][a2]) if len(
                     all_times[a1][a2]) > 0 else np.inf
-        return medians
+        return medians / (self.max(medians) - np.min(medians))

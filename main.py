@@ -9,6 +9,7 @@ from display_datalog import DataFrameModel
 from id_generator import IdGenerator
 from candidate_list_model import CandidateListModel
 from candidates_controller import CandidateController
+from metrics_list_model import MetricsListModel
 
 if __name__ == "__main__":
     app = QGuiApplication(sys.argv)
@@ -17,14 +18,16 @@ if __name__ == "__main__":
 
 
     candidate_list_model = CandidateListModel()
+    metrics_list_model = MetricsListModel()
     candidate_controller = CandidateController()
     display_datalog = DataFrameModel()
     context = engine.rootContext()
     context.setContextProperty('candidate_list_model', candidate_list_model)
+    context.setContextProperty('metrics_list_model', metrics_list_model)
     context.setContextProperty('candidate_controller', candidate_controller)
     context.setContextProperty('table_model', display_datalog)
 
-    engine.load(QUrl.fromLocalFile(qml_file))
+    engine.load(QUrl.fromLocalFile(qml_file))   
     QThread.currentThread().setObjectName("MAIN")
     
 

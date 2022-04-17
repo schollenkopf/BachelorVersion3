@@ -11,6 +11,9 @@ class TimeDistanceStdev(TimeDistance):
 
     def get_name(self) -> str:
         return "Stdev"
+
+    def get_nikname(self) -> str:
+        return "StD"
     
 
     def get_metric(self):
@@ -23,4 +26,4 @@ class TimeDistanceStdev(TimeDistance):
                 if len(all_times[a1][a2]) > 1:
                     stdevs[a1, a2] = stat.stdev(all_times[a1][a2]) 
                 else: stdevs[a1, a2] = np.inf
-        return stdevs
+        return stdevs  / (self.max(stdevs) - np.min(stdevs))

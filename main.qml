@@ -21,6 +21,7 @@ Window {
             }
             height: 100
             Button {
+                id:openFile
                 anchors.fill: parent
                 Text{
                     anchors.centerIn: parent
@@ -472,8 +473,11 @@ Window {
                 enabled: false
                 onClicked: {
                     candidate_controller.init_abstraction_controller(fileDialog.selectedFile, timestampStringInput.text, numColsInput.text, numRowsInput.text, separatorInput.text, timestampColIndex.text, charsTimeInput.text, false, actionColIndex.text, traceColIndex.text)
-                    table_model.first_setUp(6, 8114)
+                    table_model.first_setUp(numColsInput.text, numRowsInput.text)
+                    openFile.enabled = false
+                    loadbutton.enabled = false
                     ld.source="AbstractionPage.qml"
+                    candidate_controller.get_metrics()
                     candidate_controller.updater()
                 }
             }
