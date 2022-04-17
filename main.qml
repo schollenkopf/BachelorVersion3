@@ -21,6 +21,7 @@ Window {
             }
             height: 100
             Button {
+                id:openFile
                 anchors.fill: parent
                 Text{
                     anchors.centerIn: parent

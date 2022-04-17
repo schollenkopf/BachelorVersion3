@@ -295,6 +295,13 @@ Window {
                     ld2.source="AbstractionPage.qml"
                     manager.init_abstraction_page()
                     table_model.first_setUp(7, 8114)
+                    //candidate_controller.updater()
+
+                    //table_model.first_setUp(numColsInput.text, numRowsInput.text)
+                    openFile.enabled = false
+                    loadbutton.enabled = false
+                    
+                    candidate_controller.get_metrics()
                     candidate_controller.updater()
                     
                 }

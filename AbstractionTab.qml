@@ -37,7 +37,7 @@ Rectangle {
                             visible: mySwitch.position == 2
                             clip: true
                             columnWidthProvider: function (column) { return 150; }
-                            rowHeightProvider: function (column) { return 60; }
+                            rowHeightProvider: function (column) { return 40; }
                             
                             topMargin: columnsHeader.implicitHeight
                             height: 200
@@ -79,7 +79,8 @@ Rectangle {
                                         font.pixelSize: 15
                                         padding: 10
                                         verticalAlignment: Text.AlignVCenter
-
+                                        //ScrollIndicator.horizontal: ScrollIndicator { }
+                                        //ScrollIndicator.vertical: ScrollIndicator { }
                                         background: Rectangle { color: "#333333" }
                                     }
                                 }

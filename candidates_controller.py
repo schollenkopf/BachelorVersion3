@@ -19,12 +19,23 @@ class CandidateController(QObject):
 
     updated = Signal(list, int, str, int)
 
-    tabchanged = Signal(int, float, float, float)
+    tabchanged = Signal(int)
+
+    metricschanged = Signal(list, int)
 
     @Slot(str, str, int, int, str, int, int, bool, int, int)
     def init_abstraction_controller(self, filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds, action_column, trace_column):
         self.abstraction_controller = AbstractionControl(
             filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds, action_column, trace_column)
+
+    @Slot()
+    def get_metrics(self):
+        metrics_list = self.abstraction_controller.get_metrics_list()
+        self.metricschanged.emit(metrics_list, len(metrics_list) - 1)
+
+    @Slot(str, float)
+    def change_hyperparameter(self, name, new_value):
+        self.abstraction_controller.predictor.change_hyperparameter(name, new_value)
 
     @Slot()
     def updater(self):
@@ -34,18 +45,17 @@ class CandidateController(QObject):
         self.updated.emit(candidates, len(
             candidates) - 1, process_model_string, self.abstraction_controller.database.level_of_abstraction[self.abstraction_controller.database.currenttab])
 
-    @Slot(int, list)
-    def addTab(self, tab, hyperparams):
-        self.hyperparams.append(hyperparams)
+    @Slot(int)
+    def addTab(self, tab):
+        self.hyperparams.append(self.abstraction_controller.predictor.hyperparameters)
         self.abstraction_controller.newTab(tab)
 
-    @Slot(int, int, list)
-    def candidateSelected(self, candidate_index, tab, hyperparameters):
+    @Slot(int, int)
+    def candidateSelected(self, candidate_index, tab):
         self.abstraction_controller.database.currenttab = tab
         print(f'tab: {tab}')
         print(f'User clicked on: {candidate_index}')
         self.abstraction_controller.set_pair_we_are_at(candidate_index)
-        self.abstraction_controller.change_hyperparameters(hyperparameters)
         self.thread = QThread()
 
         self.worker = AbstractionWorker(self.abstraction_controller)
@@ -62,11 +72,10 @@ class CandidateController(QObject):
             lambda: self.updater()
         )
 
-    @Slot(int, list)
-    def recalculateCandidates(self, desired_abstraction_level, hyperparameters):
+    @Slot(int)
+    def recalculateCandidates(self, desired_abstraction_level):
         print("Recalculate Candidates")
-        self.hyperparams[self.abstraction_controller.database.currenttab] = hyperparameters
-        self.abstraction_controller.change_hyperparameters(hyperparameters)
+        self.hyperparams[self.abstraction_controller.database.currenttab] = self.abstraction_controller.predictor.hyperparameters
         if (desired_abstraction_level != self.abstraction_controller.database.level_of_abstraction[self.abstraction_controller.database.currenttab]):
             self.abstraction_controller.database.set_level_of_abstraction(
                 desired_abstraction_level)
@@ -89,19 +98,17 @@ class CandidateController(QObject):
         )
 
     def tabchanger(self):
-        hypervalues = []
-        for metric in self.hyperparams[self.abstraction_controller.database.currenttab]:
-            for name in metric:
-                hypervalues.append(metric[name])
         self.tabchanged.emit(
-            self.abstraction_controller.database.level_of_abstraction[self.abstraction_controller.database.currenttab], hypervalues[0], hypervalues[1], hypervalues[2])
+            self.abstraction_controller.database.level_of_abstraction[self.abstraction_controller.database.currenttab])
 
-    @Slot(int, list)
-    def changedtab(self, newtab, oldhyperparams):
-        self.hyperparams[self.abstraction_controller.database.currenttab] = oldhyperparams
+    @Slot(int)
+    def changedtab(self, newtab):
+        self.hyperparams[self.abstraction_controller.database.currenttab] = self.abstraction_controller.predictor.hyperparameters.copy()
+        self.abstraction_controller.predictor.hyperparameters = self.hyperparams[newtab].copy()
         self.abstraction_controller.database.currenttab = newtab
         self.updater()
         self.tabchanger()
+        self.get_metrics()
         print("Now on tab: ", newtab)
         print(self.hyperparams)
 
