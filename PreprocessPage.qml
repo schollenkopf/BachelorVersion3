@@ -165,7 +165,7 @@ Window {
             }
             
             Row {
-
+                height: 50
                 ComboBox {
                     id: x_axis
                     currentIndex: 2
@@ -180,7 +180,7 @@ Window {
                 }
             }
             Row {
-
+                height: 50
                 ComboBox {
                     id: y_axis
                     currentIndex: 2
@@ -195,8 +195,17 @@ Window {
                 }
             }
             Button {
-                width: 200
+                width: 250
+                height: 50
+                background: Rectangle {
+                            radius: 5
+                            anchors.fill: parent
+                            color: JS.button
+                }
                 Text {
+                    anchors.centerIn: parent
+                    color: JS.textColor
+                    font.pixelSize: 10
                     text: "Generate Plot"
                 }
                 onClicked: {
@@ -204,6 +213,7 @@ Window {
                 }
             }
             ComboBox {
+                    height: 50
                     id: sort_option
                     currentIndex: 2
                     model: [ "Banana", "Apple", "Coconut" ]
@@ -211,8 +221,17 @@ Window {
                     onCurrentIndexChanged: console.log(sort_option.model[currentIndex])
                 }
             Button {
-                width: 200
+                width: 250
+                height: 50
+                background: Rectangle {
+                            radius: 5
+                            anchors.fill: parent
+                            color: JS.button
+                }
                 Text {
+                    anchors.centerIn: parent
+                    color: JS.textColor
+                    font.pixelSize: 10
                     text: "Sort by Col"
                 }
                 onClicked: {
@@ -233,67 +252,79 @@ Window {
                         font.pixelSize: JS.inputTextHeight
                         
                     }
-            Button {
-                width: 200
-                Text {
-                    text: "Create Cluster"
-                }
-                onClicked: {
-                    manager.create_cluster(cluster_name.text)
-                    manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width)
+
+            
+            Row {
+                anchors {
+                        left: parent.left
+                        right: parent.right
+                    }
                 
+                height: 50
+                Button {
+                    id: create_cluster_button
+                    width: 125
+                    background: Rectangle {
+                                anchors.fill: parent
+                                color: JS.button
+
+                            }
+                    icon.color: create_cluster_button.hovered ? JS.iconhovered : JS.icon
+                    icon.name: "create"
+                    icon.source: "icons/create_cluster.png"
+                    icon.width: 30
+                    icon.height: 30
+                    onClicked: {
+                        manager.create_cluster(cluster_name.text)
+                        manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width)
+                    
+                    }
+                }
+                Button {
+                    id: forget_selection_button
+                        width: 125
+                        background: Rectangle {
+                                    anchors.fill: parent
+                                    color: JS.button
+
+                                }
+                        icon.color: forget_selection_button.hovered ? JS.iconhovered : JS.icon
+                        icon.name: "forget"
+                        icon.source: "icons/forget.png"
+                        icon.width: 30
+                        icon.height: 30
+                    onClicked: {
+                        manager.forget_selection()
+                        manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width)
+                    
+                    }
                 }
             }
-            Button {
-                width: 200
-                Text {
-                    text: "Forget Selection"
-                }
-                onClicked: {
-                    manager.forget_selection()
-                    manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width)
-                
-                }
-            }
-            ListView {
-                                    
-                                    id: clusters
-                                    model: ["no_cluster"]
-                                    width: 200
-                                    height: 100
-                                    flickableDirection: Flickable.VerticalFlick
-                                    boundsBehavior: Flickable.StopAtBounds
-                                    clip: true
-                                //     ScrollBar.vertical: vbar
 
-                                // ScrollBar {
-                                    
-                                //     id: vbar
-                                //     hoverEnabled: true
-                                //     active: hovered || pressed
-                                //     orientation: Qt.Vertical
-                                
-                                //     anchors.top: parent.top
-                                //     anchors.right: parent.right
-                                //     anchors.bottom: parent.bottom
-                                // }
+            
 
-                                    
-
-        }
+        
         Button {
                 id: loadbutton
-                width: 200
+                width: 250
+                height: 50
+                background: Rectangle {
+                            radius: 5
+                            anchors.fill: parent
+                            color: JS.button
+                }
                 Text {
-                    //anchors.centerIn: parent
+                    anchors.centerIn: parent
+                    color: JS.textColor
+                    font.pixelSize: 10
                     text: "LOAD ABSTRACTION TOOL"
                 }
                 
                 onClicked: {
                     
                     
-                    ld2.source="AbstractionPage.qml"
                     manager.init_abstraction_page()
+                    ld2.source="AbstractionPage.qml"
                     table_model.first_setUp(7, 8114)
                     //candidate_controller.updater()
 
@@ -305,6 +336,86 @@ Window {
                     candidate_controller.updater()
                     
                 }
+            }
+            Rectangle {
+                    //anchors.fill: parent
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                    }
+                    height: parent.height - 450
+                    id: listRectangle
+                    color: JS.background
+                    ListView {
+
+                        id: list
+                        model: cluster_list_model
+                        anchors.fill: parent
+                        flickableDirection: Flickable.VerticalFlick
+                        boundsBehavior: Flickable.StopAtBounds
+                        clip: true
+                        delegate: Item {
+                        width: list.width; height: 40
+
+                        Row{
+
+                            anchors.fill: parent
+                            Text {
+                                width: 210
+                                anchors.top: parent.top
+                                anchors.bottom: parent.bottom
+                                text: display
+                                color: JS.textColor
+                                font.pixelSize: 10
+
+                            }
+                            Rectangle {
+                                width: 30
+                                height : 30
+                                
+                                
+                                radius: 5
+                                color: colorrole
+                                
+
+                            }
+                        }
+
+
+                        // MouseArea {
+                        //     anchors.fill: parent
+                        //     onClicked: {
+                        //         list.currentIndex = index
+                        //     }
+                        // }
+
+
+                    }
+                    //highlight: Rectangle { color: JS.highlight; radius: 5 }
+                    //focus: true
+                    ScrollBar.vertical: vbar
+
+                    ScrollBar {
+
+                        id: vbar
+                        hoverEnabled: true
+                        active: hovered || pressed
+                        orientation: Qt.Vertical
+
+                        anchors.top: parent.top
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                    }
+
+                }
+
+                BusyIndicator {
+                    id: bi
+                    anchors.fill: parent
+                    //visible: false
+                    running: false
+                }
+
             }
 
 
@@ -321,9 +432,11 @@ Window {
     }
     Connections {
         target: manager
-        function onUpdate_clusters(a){
-            clusters.model = a
-        }
+        function onUpdate_clusters(clusters_list, number_clusters)
+    {
+        cluster_list_model.removeRows(0, cluster_list_model.rowCount() - 1);
+        cluster_list_model.insertRows(0, number_clusters, clusters_list)
+    }
 
     }
     

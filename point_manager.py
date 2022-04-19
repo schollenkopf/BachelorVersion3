@@ -30,7 +30,7 @@ class PointManager(QObject):
 
     init = Signal(list)
     pointsselected = Signal(int, int, int, int)
-    update_clusters = Signal(list)
+    update_clusters = Signal(list,int)
 
     @Property(QObject, constant=True)
     def model(self):
@@ -83,6 +83,7 @@ class PointManager(QObject):
         self.data = self.data.assign(
             color=color_column, cluster=cluster_column)
         self.init.emit(list(self.data.columns))
+        self.update_cluster_list()
 
     @Slot(str, bool, str, bool, int, int, int, int, int)
     def draw_scatter(self, x_column, number_x, y_column, number_y, width, height,margin_right,margin_bottom,margin_left):
@@ -205,8 +206,8 @@ class PointManager(QObject):
     def update_cluster_list(self):
         clusters = set()
         for event in (self.data.values):
-            clusters.add(event[self.cluster_column_nr])
-        self.update_clusters.emit(list(clusters))
+            clusters.add((event[self.cluster_column_nr],event[self.color_column_nr]))
+        self.update_clusters.emit(list(clusters),len(list(clusters))-1)
     
     @Slot()
     def init_abstraction_page(self):
