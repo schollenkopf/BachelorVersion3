@@ -57,6 +57,9 @@ class PointManager(QObject):
     @Slot()
     def initialise_data(self):
         self.data = self.candidate_controller.abstraction_controller.preSetUp()
+        self.original_timestamp_column = self.data.iloc[:,self.candidate_controller.abstraction_controller.timestamp_column].copy().values
+        print(self.original_timestamp_column)
+
         for trace in list(self.data[self.data.columns[self.candidate_controller.abstraction_controller.trace_column]].unique()):
             is_first = True
             first_time = 0
@@ -212,7 +215,7 @@ class PointManager(QObject):
     @Slot()
     def init_abstraction_page(self):
         data = self.data.drop(labels = "color", axis=1)
-        print(data.head())
+        data[self.data.columns[self.candidate_controller.abstraction_controller.timestamp_column]] = self.original_timestamp_column
         self.candidate_controller.abstraction_controller.setUp(data)
 
     
