@@ -3,9 +3,13 @@ import QtQuick.Controls
 import QtQuick.Window
 import QtQuick.Layouts
 import "constants.js" as JS
-
-Rectangle{
-    anchors.fill: parent
+Window{
+    title: "Abstraction Tool"
+    width: JS.width
+    height: JS.height
+    visible: true
+    id: mainWindow
+    //anchors.fill: parent
     color: JS.background
     Component {
         id: tabbutton

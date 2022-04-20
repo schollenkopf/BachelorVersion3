@@ -27,7 +27,8 @@ class CandidateController(QObject):
 
     @Slot(str, str, int, int, str, int, int, bool, int, int)
     def init_abstraction_controller(self, filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds, action_column, trace_column):
-        self.abstraction_controller = AbstractionControl(filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds, action_column, trace_column)
+        self.abstraction_controller = AbstractionControl(
+            filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds, action_column, trace_column)
 
     @Slot()
     def get_metrics(self):
