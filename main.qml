@@ -476,6 +476,7 @@ Window {
                     //table_model.first_setUp(6, 8114)
                     ld.source="PreprocessPage.qml"
                     manager.initialise_data()
+                    //mainWindow.close()
                     //manager.draw_scatter("timestamp",true,"type",false,1000,600)
                     //candidate_controller.updater()
                     

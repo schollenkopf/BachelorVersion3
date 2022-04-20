@@ -470,6 +470,7 @@ Window {
                     
                     candidate_controller.get_metrics()
                     candidate_controller.updater()
+                    mainWindow.close()
                     
                 }
             }
