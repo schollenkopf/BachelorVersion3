@@ -98,6 +98,9 @@ class Database:
         self.driver.close()
         """
 
+    def generate_tree_no_change(self):
+        self.generate_tree()
+
     def fix_string(self, action):
         action = action.replace("\\", "_") 
         action = action.replace("(", "__") 

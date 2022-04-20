@@ -103,6 +103,35 @@ class AbstractionControl():
         # print("3")
         self.pair_we_are_at = 0
 
+    def delete_repetitions_specific_event(self, action_index):
+        set_of_actions = self.database.get_actions()
+        event = set_of_actions[action_index]
+        print("Delete Repetitions for " + event)
+        self.database.increase_level_of_abstraction()
+        
+        self.log_processor.delete_repetitions_event(event)
+        self.database.update_latest_log(
+            self.database.latest_log[self.database.currenttab])
+        self.database.generate_tree_no_change()
+        self.heuristic_miner.save_process_as_png(
+            self.database.level_of_abstraction[self.database.currenttab])
+        self.get_new_prediction()
+        self.pair_we_are_at = 0
+
+
+    def delete_all_repetitions(self):
+        print("Delete Repetitions for all events ")
+        self.database.increase_level_of_abstraction()
+        
+        self.log_processor.delete_repetitions()
+        self.database.update_latest_log(
+            self.database.latest_log[self.database.currenttab])
+        self.database.generate_tree_no_change()
+        self.heuristic_miner.save_process_as_png(
+            self.database.level_of_abstraction[self.database.currenttab])
+        self.get_new_prediction()
+        self.pair_we_are_at = 0
+
     def get_sorted_pair_labels(self):
         set_of_actions = self.database.get_actions()
         candidates = []

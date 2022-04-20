@@ -12,12 +12,14 @@ from candidates_controller import CandidateController
 from point_manager import PointManager
 
 from metrics_list_model import MetricsListModel
+from actions_list_model import ActionListModel
 
 if __name__ == "__main__":
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
     qml_file = Path(__file__).parent / "main.qml"
 
+    actions_list_model = ActionListModel()
     candidate_list_model = CandidateListModel()
     metrics_list_model = MetricsListModel()
     candidate_controller = CandidateController()
@@ -32,6 +34,7 @@ if __name__ == "__main__":
     context.setContextProperty('metrics_list_model', metrics_list_model)
     context.setContextProperty('candidate_controller', candidate_controller)
     context.setContextProperty('table_model', display_datalog)
+    context.setContextProperty('actions_list_model', actions_list_model)
     context.setContextProperty('cluster_list_model', cluster_list_model)
 
     engine.load(QUrl.fromLocalFile(qml_file))   

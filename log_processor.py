@@ -34,8 +34,6 @@ class LogProcessor:
         rawdata_values = rawdata.values
         for trace in self.database.get_traces():
             # print(len(self.database.get_actions()))
-            if (len(self.database.get_actions()) == 277):
-                continue
 
             last_event = []
             last_row = None
@@ -60,3 +58,36 @@ class LogProcessor:
                 #print("Ids to delete")
                 # print(ids_to_delete)
         self.database.delete_events(ids_to_delete)
+
+
+    def delete_repetitions_event(self, event_to_delete):
+            # keeps the mean time of the
+            rawdata = self.database.get_latest_log()
+            ids_to_delete = []
+            rawdata_values = rawdata.values
+            for trace in self.database.get_traces():
+                # print(len(self.database.get_actions()))
+
+                last_event = []
+                last_row = None
+                average_time = np.array([])
+                for row in self.filter_data_by_trace(trace):
+                    event = rawdata_values[row, :]
+                    # print(event[self.action_column])
+                    # print(row)
+                    if len(last_event) > 0 and last_event[self.action_column] == event[self.action_column] and event[self.action_column] == event_to_delete:
+                        #print(last_event[self.action_column] + " " + event[self.action_column])
+                        average_time = np.append(
+                            average_time, last_event[self.timestamp_column])
+                        ids_to_delete.append(last_row)
+
+                    if len(average_time) > 0 and last_event[self.action_column] != event[self.action_column]:
+                        # Maybe keep track also of the other proprieties, not only time
+                        self.database.change_event(
+                            last_row, self.database.get_timestamp_column(), average_time.mean())
+                        average_time = np.array([])
+                    last_event = event
+                    last_row = row
+                    #print("Ids to delete")
+                    # print(ids_to_delete)
+            self.database.delete_events(ids_to_delete)
