@@ -33,12 +33,97 @@ Window {
                 top: parent.top
                 bottom: parent.bottom
             }
+            Rectangle {
+                anchors {
+                    left: parent.left
+                    right:parent.right
+                }
+                height: 40
+                color: JS.background
+                
+                Row {
+                        anchors {
+                                left: parent.left
+                                right: parent.right
+                            }
+                        
+                        height: 40
+                        Rectangle {
+                            anchors {
+                                top: parent.top
+                                bottom: parent.bottom
+                            }
+                            color: JS.inputBackColor
+                            width: parent.width - 100
+                            radius: 20
+
+                            TextInput{
+
+                                anchors {
+                                    //leftMargin: 10
+                                    verticalCenter: parent.verticalCenter
+                                }
+                                id: cluster_name
+                                //anchors.verticalCenter: parent.verticalCenter
+
+                                
+                                focus: true
+                                text: "cluster_name"
+                                
+                                
+                                color: JS.colorInText
+                                font.pixelSize: JS.inputTextHeight
+                                
+                            }
+                        }
+                        Button {
+                            
+                            id: create_cluster_button
+                            width: 50
+                            background: Rectangle {
+                                        anchors.fill: parent
+                                        color: JS.button
+
+                                    }
+                            icon.color: create_cluster_button.hovered ? JS.iconhovered : JS.icon
+                            icon.name: "create"
+                            icon.source: "icons/create_cluster.png"
+                            icon.width: 30
+                            icon.height: 30
+                            onClicked: {
+                                manager.create_cluster(cluster_name.text)
+                                manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width)
+                            
+                            }
+                        }
+                        Button {
+                            
+                            id: forget_selection_button
+                                width: 50
+                                background: Rectangle {
+                                            anchors.fill: parent
+                                            color: JS.button
+
+                                        }
+                                icon.color: forget_selection_button.hovered ? JS.iconhovered : JS.icon
+                                icon.name: "forget"
+                                icon.source: "icons/forget.png"
+                                icon.width: 30
+                                icon.height: 30
+                            onClicked: {
+                                manager.forget_selection()
+                                manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width)
+                            
+                            }
+                        }
+                    }
+            }
 
         Rectangle {
             color: JS.background
             
             
-            height: parent.height - 100
+            height: parent.height - 140
             anchors {
                 left: parent.left
                 right: parent.right
@@ -164,179 +249,6 @@ Window {
                 bottom: parent.bottom
             }
             
-            Row {
-                height: 50
-                ComboBox {
-                    id: x_axis
-                    currentIndex: 2
-                    model: [ "Banana", "Apple", "Coconut" ]
-                    width: 200
-                    onCurrentIndexChanged: console.log(x_axis.model[currentIndex])
-                }
-                CheckBox {
-                    id: number_x
-                    checked: true
-                    text: qsTr("Number")
-                }
-            }
-            Row {
-                height: 50
-                ComboBox {
-                    id: y_axis
-                    currentIndex: 2
-                    model: [ "Banana", "Apple", "Coconut" ]
-                    width: 200
-                    onCurrentIndexChanged: console.log(y_axis.model[currentIndex])
-                }
-                CheckBox {
-                    id: number_y
-                    checked: true
-                    text: qsTr("Number")
-                }
-            }
-            Button {
-                width: 250
-                height: 50
-                background: Rectangle {
-                            radius: 5
-                            anchors.fill: parent
-                            color: JS.button
-                }
-                Text {
-                    anchors.centerIn: parent
-                    color: JS.textColor
-                    font.pixelSize: 10
-                    text: "Generate Plot"
-                }
-                onClicked: {
-                    manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width)
-                }
-            }
-            ComboBox {
-                    height: 50
-                    id: sort_option
-                    currentIndex: 2
-                    model: [ "Banana", "Apple", "Coconut" ]
-                    width: 200
-                    onCurrentIndexChanged: console.log(sort_option.model[currentIndex])
-                }
-            Button {
-                width: 250
-                height: 50
-                background: Rectangle {
-                            radius: 5
-                            anchors.fill: parent
-                            color: JS.button
-                }
-                Text {
-                    anchors.centerIn: parent
-                    color: JS.textColor
-                    font.pixelSize: 10
-                    text: "Sort by Col"
-                }
-                onClicked: {
-                    manager.color_by_column(sort_option.model[sort_option.currentIndex])
-                    manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width)
-                }
-            }
-            TextInput{
-                        id: cluster_name
-                        //anchors.verticalCenter: parent.verticalCenter
-
-                        
-                        focus: true
-                        text: "cluster_name"
-                        anchors.left: parent.left
-                        anchors.leftMargin: 10
-                        color: JS.colorInText
-                        font.pixelSize: JS.inputTextHeight
-                        
-                    }
-
-            
-            Row {
-                anchors {
-                        left: parent.left
-                        right: parent.right
-                    }
-                
-                height: 50
-                Button {
-                    id: create_cluster_button
-                    width: 125
-                    background: Rectangle {
-                                anchors.fill: parent
-                                color: JS.button
-
-                            }
-                    icon.color: create_cluster_button.hovered ? JS.iconhovered : JS.icon
-                    icon.name: "create"
-                    icon.source: "icons/create_cluster.png"
-                    icon.width: 30
-                    icon.height: 30
-                    onClicked: {
-                        manager.create_cluster(cluster_name.text)
-                        manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width)
-                    
-                    }
-                }
-                Button {
-                    id: forget_selection_button
-                        width: 125
-                        background: Rectangle {
-                                    anchors.fill: parent
-                                    color: JS.button
-
-                                }
-                        icon.color: forget_selection_button.hovered ? JS.iconhovered : JS.icon
-                        icon.name: "forget"
-                        icon.source: "icons/forget.png"
-                        icon.width: 30
-                        icon.height: 30
-                    onClicked: {
-                        manager.forget_selection()
-                        manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width)
-                    
-                    }
-                }
-            }
-
-            
-
-        
-        Button {
-                id: loadbutton
-                width: 250
-                height: 50
-                background: Rectangle {
-                            radius: 5
-                            anchors.fill: parent
-                            color: JS.button
-                }
-                Text {
-                    anchors.centerIn: parent
-                    color: JS.textColor
-                    font.pixelSize: 10
-                    text: "LOAD ABSTRACTION TOOL"
-                }
-                
-                onClicked: {
-                    
-                    
-                    manager.init_abstraction_page()
-                    ld2.source="AbstractionPage.qml"
-                    table_model.first_setUp(7, 8114)
-                    //candidate_controller.updater()
-
-                    //table_model.first_setUp(numColsInput.text, numRowsInput.text)
-                    openFile.enabled = false
-                    loadbutton.enabled = false
-                    
-                    candidate_controller.get_metrics()
-                    candidate_controller.updater()
-                    
-                }
-            }
             Rectangle {
                     //anchors.fill: parent
                     anchors {
@@ -409,14 +321,159 @@ Window {
 
                 }
 
-                BusyIndicator {
-                    id: bi
-                    anchors.fill: parent
-                    //visible: false
-                    running: false
-                }
 
             }
+
+            Rectangle {
+                height: 30
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                }
+                color: JS.background
+            Row {
+                anchors.fill: parent
+                ComboBox {
+                    anchors.verticalCenter: parent.verticalCenter
+                    id: x_axis
+                    currentIndex: 2
+                    model: [ "Banana", "Apple", "Coconut" ]
+                    width: 180
+                    onCurrentIndexChanged: console.log(x_axis.model[currentIndex])
+                    
+                }
+                CheckBox {
+                    anchors.verticalCenter: parent.verticalCenter
+                    id: number_x
+                    checked: true
+
+                    
+                }
+                    Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            color: JS.textColor
+                            text: "Number"
+                        }
+            }
+            }
+            Rectangle {
+                height: 30
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                }
+                color: JS.background
+                Row {
+                    anchors.fill: parent
+                    ComboBox {
+                        anchors.verticalCenter: parent.verticalCenter
+                        id: y_axis
+                        currentIndex: 2
+                        model: [ "Banana", "Apple", "Coconut" ]
+                        width: 180
+                        onCurrentIndexChanged: console.log(y_axis.model[currentIndex])
+                    }
+                    CheckBox {
+                        anchors.verticalCenter: parent.verticalCenter
+                        id: number_y
+                        checked: true
+                        
+                        
+                    }
+                    Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            color: JS.textColor
+                            text: "Number"
+                        }
+                }
+            }
+            Button {
+                width: 250
+                height: 50
+                background: Rectangle {
+                            radius: 5
+                            anchors.fill: parent
+                            color: JS.button
+                }
+                Text {
+                    anchors.centerIn: parent
+                    color: JS.textColor
+                    font.pixelSize: 10
+                    text: "Generate Plot"
+                }
+                onClicked: {
+                    manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width)
+                }
+            }
+            ComboBox {
+                    height: 50
+                    id: sort_option
+                    currentIndex: 2
+                    model: [ "Banana", "Apple", "Coconut" ]
+                    width: 200
+                    onCurrentIndexChanged: console.log(sort_option.model[currentIndex])
+                }
+            Button {
+                width: 250
+                height: 50
+                background: Rectangle {
+                            radius: 5
+                            anchors.fill: parent
+                            color: JS.button
+                }
+                Text {
+                    anchors.centerIn: parent
+                    color: JS.textColor
+                    font.pixelSize: 10
+                    text: "Sort by Col"
+                }
+                onClicked: {
+                    manager.color_by_column(sort_option.model[sort_option.currentIndex])
+                    manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width)
+                }
+            }
+            
+
+            
+            
+
+            
+
+        
+        Button {
+                id: loadbutton
+                width: 250
+                height: 50
+                background: Rectangle {
+                            radius: 5
+                            anchors.fill: parent
+                            color: JS.button
+                }
+                Text {
+                    anchors.centerIn: parent
+                    color: JS.textColor
+                    font.pixelSize: 10
+                    text: "LOAD ABSTRACTION TOOL"
+                }
+                
+                onClicked: {
+                    
+                    
+                    manager.init_abstraction_page()
+                    ld2.source="AbstractionPage.qml"
+                    table_model.first_setUp(7, 8114)
+                    //candidate_controller.updater()
+
+                    //table_model.first_setUp(numColsInput.text, numRowsInput.text)
+                    openFile.enabled = false
+                    loadbutton.enabled = false
+                    
+                    candidate_controller.get_metrics()
+                    candidate_controller.updater()
+                    
+                }
+            }
+            
 
 
     }
