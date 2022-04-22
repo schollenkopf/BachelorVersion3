@@ -15,6 +15,7 @@ Rectangle {
     radius: 3
     x: 100
     y: 100
+    z: 50
     width: 5
     height: 5
     color: "red"

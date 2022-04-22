@@ -7,8 +7,8 @@ import "constants.js" as JS
 
 Window {
     title: "Abstraction Tool"
-    width: JS.width
-    height: JS.height
+    width: 400
+    height: 600
     visible: true
     id: mainWindow
 
