@@ -217,11 +217,11 @@ Window {
                             selectionRect.height = Math.abs(mouse.x - selectionRect.x)
                         }
                     }
-                    manager.color_points(selectionRect.height, selectionRect.width, selectionRect.rotation, selectionRect.x, selectionRect.y)
+                    //manager.color_points(selectionRect.height, selectionRect.width, selectionRect.rotation, selectionRect.x, selectionRect.y)
                 }
 
                 onReleased: {
-                    
+                    manager.color_points(selectionRect.height, selectionRect.width, selectionRect.rotation, selectionRect.x, selectionRect.y)
                     selectionRect.visible = false
                     
                 }
