@@ -12,20 +12,32 @@ Window {
     height: JS.height
     visible: true
     id: mainWindow
-    color: "white"
+    color: JS.background
      
     
     Row {
         anchors.fill: parent
 
         Rectangle {
-            color: "green"
+            color: JS.background
             width: 100
             anchors {
                 top: parent.top
                 bottom: parent.bottom
             }
             id: leftlabel
+            Repeater{
+                    id: y_axis_repeater
+                    model: manager.ylabel
+                    Text {
+                        x: 10
+                        y: model.ypos 
+                        text: model.text
+                        font.pixelSize: 10
+                        color: JS.textColor
+                    }
+                }
+            
         }
         Column{
             width: parent.width - 350
@@ -92,7 +104,7 @@ Window {
                             icon.height: 30
                             onClicked: {
                                 manager.create_cluster(cluster_name.text)
-                                manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width)
+                                manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width, 40)
                             
                             }
                         }
@@ -112,7 +124,7 @@ Window {
                                 icon.height: 30
                             onClicked: {
                                 manager.forget_selection()
-                                manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width)
+                                manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width, 40)
                             
                             }
                         }
@@ -205,11 +217,11 @@ Window {
                             selectionRect.height = Math.abs(mouse.x - selectionRect.x)
                         }
                     }
-                    manager.color_points(selectionRect.height, selectionRect.width, selectionRect.rotation, selectionRect.x, selectionRect.y)
+                    //manager.color_points(selectionRect.height, selectionRect.width, selectionRect.rotation, selectionRect.x, selectionRect.y)
                 }
 
                 onReleased: {
-                    
+                    manager.color_points(selectionRect.height, selectionRect.width, selectionRect.rotation, selectionRect.x, selectionRect.y)
                     selectionRect.visible = false
                     
                 }
@@ -229,13 +241,27 @@ Window {
             }
         }
         Rectangle {
-            color: "blue"
+            color: JS.background
             height: 100
             anchors {
                 left: parent.left
                 right: parent.right
             }
             id: bottomlabel
+            Repeater{
+                    id: x_axis_repeater
+                    model: manager.xlabel
+                    Text {
+                        id: x_label_text
+                        text: model.text
+                        x: model.xpos - x_label_text.width / 2
+                        y:  x_label_text.width / 2
+                        rotation: -90
+                        font.pixelSize: 10
+                        color: JS.textColor
+                        
+                    }
+                }
         }
 
         }
@@ -255,7 +281,7 @@ Window {
                         left: parent.left
                         right: parent.right
                     }
-                    height: parent.height - 450
+                    height: parent.height - 260
                     id: listRectangle
                     color: JS.background
                     ListView {
@@ -402,15 +428,15 @@ Window {
                     text: "Generate Plot"
                 }
                 onClicked: {
-                    manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width)
+                    manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width,40)
                 }
             }
             ComboBox {
-                    height: 50
+                    height: 30
                     id: sort_option
                     currentIndex: 2
                     model: [ "Banana", "Apple", "Coconut" ]
-                    width: 200
+                    width: 250
                     onCurrentIndexChanged: console.log(sort_option.model[currentIndex])
                 }
             Button {
@@ -429,7 +455,7 @@ Window {
                 }
                 onClicked: {
                     manager.color_by_column(sort_option.model[sort_option.currentIndex])
-                    manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width)
+                    manager.draw_scatter(x_axis.model[x_axis.currentIndex],number_x.checked,y_axis.model[y_axis.currentIndex],number_y.checked,plot.width,plot.height,plotbuttons.width,bottomlabel.height,leftlabel.width,40)
                 }
             }
             
@@ -455,6 +481,7 @@ Window {
                     font.pixelSize: 10
                     text: "LOAD ABSTRACTION TOOL"
                 }
+                enabled: false
                 
                 onClicked: {
                     
@@ -494,6 +521,9 @@ Window {
     {
         cluster_list_model.removeRows(0, cluster_list_model.rowCount() - 1);
         cluster_list_model.insertRows(0, number_clusters, clusters_list)
+        if (number_clusters>2) {
+            loadbutton.enabled = true
+        }
     }
 
     }
