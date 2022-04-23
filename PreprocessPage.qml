@@ -481,6 +481,7 @@ Window {
                     font.pixelSize: 10
                     text: "LOAD ABSTRACTION TOOL"
                 }
+                enabled: false
                 
                 onClicked: {
                     
@@ -520,6 +521,9 @@ Window {
     {
         cluster_list_model.removeRows(0, cluster_list_model.rowCount() - 1);
         cluster_list_model.insertRows(0, number_clusters, clusters_list)
+        if (number_clusters>2) {
+            loadbutton.enabled = true
+        }
     }
 
     }
