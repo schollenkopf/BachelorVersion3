@@ -488,7 +488,7 @@ Window {
                     
                     manager.init_abstraction_page()
                     ld2.source="AbstractionPage.qml"
-                    table_model.first_setUp(7, 8114)
+                    
                     //candidate_controller.updater()
 
                     //table_model.first_setUp(numColsInput.text, numRowsInput.text)
@@ -526,6 +526,17 @@ Window {
         }
     }
 
+    
+    }
+
+    Connections {
+        target: manager
+        function onInitTable(n_cols, n_rows)
+    {
+        table_model.first_setUp(n_cols, n_rows)
+
+    
+    }
     }
     
 }

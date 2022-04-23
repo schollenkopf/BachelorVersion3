@@ -300,9 +300,12 @@ class PointManager(QObject):
                          event[self.color_column_nr]))
         self.update_clusters.emit(list(clusters), len(list(clusters))-1)
 
+    initTable = Signal(int, int)
+
     @Slot()
     def init_abstraction_page(self):
         data = self.data.drop(labels="color", axis=1)
         data[self.data.columns[self.candidate_controller.abstraction_controller.timestamp_column]
              ] = self.original_timestamp_column
         self.candidate_controller.abstraction_controller.setUp(data)
+        self.initTable.emit(self.candidate_controller.abstraction_controller.number_columns, self.candidate_controller.abstraction_controller.number_rows)
