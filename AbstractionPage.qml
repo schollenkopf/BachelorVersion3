@@ -646,11 +646,36 @@ Window{
                                             }
                                             onClicked: {
                                                 bi.running = true;
-                                                mergeButton.enabled = false
-                                                reculateButton.enabled = false
-                                                deleteRepetitions.enabled = false
-                                                deleteAllRepetitions.enabled = false
+                                                
                                                 candidate_controller.candidateSelected(list.currentIndex, bar.currentIndex)
+                                                list.model.removeRows(0, list.model.rowCount() - 1);
+                                            }
+                                        }
+
+                                        Button {
+                                            anchors {
+                                                top: parent.top
+                                                bottom: parent.bottom
+                                            }
+                                            width: 0.5 * parent.width
+
+                                            id: mergeButtonPattern
+
+                                            background: Rectangle {
+                                                radius: 5
+                                                anchors.fill: parent
+                                                color: JS.button
+                                                Text{
+                                                    anchors.centerIn: parent
+                                                    text: "MERGE PATTERN"
+                                                    color: JS.textColor
+                                                    font.pixelSize: 10
+                                                }
+                                            }
+                                            onClicked: {
+                                                bi.running = true;
+                                                
+                                                candidate_controller.candidateSelectedPattern(list.currentIndex, bar.currentIndex)
                                                 list.model.removeRows(0, list.model.rowCount() - 1);
                                             }
                                         }
@@ -687,13 +712,67 @@ Window{
                                             }
                                             onClicked: {
                                                 bi.running = true;
-                                                mergeButton.enabled = false
-                                                reculateButton.enabled = false
-                                                deleteRepetitions.enabled = false
-                                                deleteAllRepetitions.enabled = false
+                                                
                                                 candidate_controller.delete_rep_event(list_single_actions.currentIndex, bar.currentIndex)
                                                 list.model.removeRows(0, list.model.rowCount() - 1);
                                             }
+                                        }
+
+                                        Row{
+
+                                            anchors {
+                                                top: parent.top
+                                                bottom: parent.bottom
+                                            }
+                                            width: 0.5 * parent.width
+                                            
+                                            Button {
+                                                anchors {
+                                                    top: parent.top
+                                                    bottom: parent.bottom
+                                                }
+                                                width: 0.5 * parent.width
+    
+                                                id: deleteRepetitionsTime
+    
+                                                background: Rectangle {
+                                                    radius: 5
+                                                    anchors.fill: parent
+                                                    color: JS.button
+                                                    
+                                                    Text{
+                                                        anchors.top: parent.top
+                                                        anchors.bottom: parent.bottom
+                                                        width: parent.width * 0.5
+                                                        text: "DELETE REP."
+                                                        color: JS.textColor
+                                                        font.pixelSize: 10
+                                                    }
+
+                                                    
+                                                }
+                                                onClicked: {
+                                                    bi.running = true;
+                                                    
+                                                    candidate_controller.delete_rep_event_time(list_single_actions.currentIndex, bar.currentIndex, secondsInput.text)
+                                                    list.model.removeRows(0, list.model.rowCount() - 1);
+                                                }
+                                            }
+
+                                            TextInput{
+                                                id: secondsInput
+                                                anchors {
+                                                    top: parent.top
+                                                    bottom: parent.bottom
+                                                }
+                                                width: 0.5 * parent.width
+                                                validator: IntValidator{bottom: 0;}
+                                                focus: true
+                                                text: "10"
+                                                color: JS.textColor
+                                                font.pixelSize: 10
+                                            }
+
                                         }
 
                                     }
@@ -729,12 +808,58 @@ Window{
                                             }
                                             onClicked: {
                                                 bi.running = true;
-                                                mergeButton.enabled = false
-                                                reculateButton.enabled = false
-                                                deleteRepetitions.enabled = false
-                                                deleteAllRepetitions.enabled = false
+                                                
                                                 candidate_controller.delete_all_rep(bar.currentIndex)
                                                 list.model.removeRows(0, list.model.rowCount() - 1);
+                                            }
+                                        }
+
+                                        Row{
+
+                                            anchors {
+                                                top: parent.top
+                                                bottom: parent.bottom
+                                            }
+                                            width: 0.5 * parent.width
+                                            Button {
+                                                anchors {
+                                                    top: parent.top
+                                                    bottom: parent.bottom
+                                                }
+                                                width: 0.5 * parent.width
+    
+                                                id: deleteAllRepetitionsTime
+    
+                                                background: Rectangle {
+                                                    radius: 5
+                                                    anchors.fill: parent
+                                                    color: JS.button
+                                                    Text{
+                                                        anchors.centerIn: parent
+                                                        text: "DELETE ALL REP."
+                                                        color: JS.textColor
+                                                        font.pixelSize: 10
+                                                    }
+                                                }
+                                                onClicked: {
+                                                    bi.running = true;
+                                                    
+                                                    candidate_controller.delete_all_rep_time(bar.currentIndex, secondsInputAll.text)
+                                                    list.model.removeRows(0, list.model.rowCount() - 1);
+                                                }
+                                            }
+                                            TextInput{
+                                                id: secondsInputAll
+                                                anchors {
+                                                    top: parent.top
+                                                    bottom: parent.bottom
+                                                }
+                                                width: 0.5 * parent.width
+                                                validator: IntValidator{bottom: 0;}
+                                                focus: true
+                                                text: "10"
+                                                color: JS.textColor
+                                                font.pixelSize: 10
                                             }
                                         }
 
@@ -902,6 +1027,9 @@ Window{
             reculateButton.enabled = true
             deleteRepetitions.enabled = true
             deleteAllRepetitions.enabled = true
+            mergeButtonPattern.enabled = true
+            deleteRepetitionsTime.enabled = true
+            deleteAllRepetitionsTime.enabled = true
             if (len==0)
             {
                 mergeButton.enabled = false;
@@ -935,6 +1063,20 @@ Window{
         {
             actions_list_model.removeRows(0, actions_list_model.rowCount() - 1);
             actions_list_model.insertRows(0, len_actions, actions_list)
+        }
+    }
+
+    Connections {
+        target: candidate_controller
+        function onDisablebuttons()
+        {
+            mergeButton.enabled = false
+            reculateButton.enabled = false
+            deleteRepetitions.enabled = false
+            deleteAllRepetitions.enabled = false
+            mergeButtonPattern.enabled = false
+            deleteRepetitionsTime.enabled = false
+            deleteAllRepetitionsTime.enabled = false
         }
     }
 

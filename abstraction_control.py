@@ -118,12 +118,40 @@ class AbstractionControl():
         self.get_new_prediction()
         self.pair_we_are_at = 0
 
+    def delete_repetitions_specific_event_time(self, action_index, seconds):
+        set_of_actions = self.database.get_actions()
+        event = set_of_actions[action_index]
+        print("Delete Repetitions for " + event)
+        self.database.increase_level_of_abstraction()
+        
+        self.log_processor.delete_repetitions_event_time(event, seconds)
+        self.database.update_latest_log(
+            self.database.latest_log[self.database.currenttab])
+        self.database.generate_tree_no_change()
+        self.heuristic_miner.save_process_as_png(
+            self.database.level_of_abstraction[self.database.currenttab])
+        self.get_new_prediction()
+        self.pair_we_are_at = 0
+
 
     def delete_all_repetitions(self):
         print("Delete Repetitions for all events ")
         self.database.increase_level_of_abstraction()
         
         self.log_processor.delete_repetitions()
+        self.database.update_latest_log(
+            self.database.latest_log[self.database.currenttab])
+        self.database.generate_tree_no_change()
+        self.heuristic_miner.save_process_as_png(
+            self.database.level_of_abstraction[self.database.currenttab])
+        self.get_new_prediction()
+        self.pair_we_are_at = 0
+
+    def delete_all_repetitions_time(self, time_seconds):
+        print("Delete Repetitions for all events ")
+        self.database.increase_level_of_abstraction()
+        
+        self.log_processor.delete_repetitions_time(time_seconds)
         self.database.update_latest_log(
             self.database.latest_log[self.database.currenttab])
         self.database.generate_tree_no_change()
@@ -188,3 +216,35 @@ class AbstractionControl():
         self.sorted_pair_array.pop(tab)
         self.sorted_pair_labels.pop(tab)
         self.database.deletetab(tab)
+
+    def pattern_abstract(self):
+        print("init Pattern Abstract")
+        self.database.increase_level_of_abstraction()
+        set_of_actions = self.database.get_actions()
+        e1 = set_of_actions[self.sorted_pair_labels[self.database.currenttab]
+                            [0, self.pair_we_are_at]]
+        e2 = set_of_actions[self.sorted_pair_labels[self.database.currenttab]
+                            [1, self.pair_we_are_at]]
+        print("renaming")
+        nr_events_abstracted = self.log_processor.abstract_log_pattern(e1, e2, e1 + e2)
+        # print("1")
+        print("seleting repetitions")
+        # self.log_processor.delete_repetitions()
+        # print("2")
+        print("updating_latest_log")
+        self.database.update_latest_log(
+            self.database.latest_log[self.database.currenttab])
+
+        #print(f"Merging {e1} and {e2}")
+        #print(f"Abstracted {nr_events_abstracted} Events")
+        #print(f"Now you only have {len(self.database.get_actions())} actions")
+        #print(f"{self.database.events_deleted_last_abstraction} have been deleted")
+
+        self.database.update_tree(e1, e2, e1 + e2)
+        # print("3")
+        self.heuristic_miner.save_process_as_png(
+            self.database.level_of_abstraction[self.database.currenttab])
+        # print("3")
+        self.get_new_prediction()
+        # print("3")
+        self.pair_we_are_at = 0

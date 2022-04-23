@@ -1,6 +1,6 @@
 from hashlib import new
 from abstraction_control import AbstractionControl
-from abstraction_worker import AbstractionWorker, DelAllRepWorker, DelRepEventWorker, UpdateCandidatesWorker
+from abstraction_worker import AbstractionWorker, DelAllRepWorker, DelAllRepWorkerTime, DelRepEventTimeWorker, DelRepEventWorker, PatternAbstractionWorker, UpdateCandidatesWorker
 from PySide6.QtCore import Slot, QObject, QThread, Signal
 
 from database import Database
@@ -24,6 +24,8 @@ class CandidateController(QObject):
     metricschanged = Signal(list, int)
 
     actionschanged = Signal(list, int)
+
+    disablebuttons = Signal()
 
     @Slot(str, str, int, int, str, int, int, bool, int, int)
     def init_abstraction_controller(self, filename, time_string, number_columns, number_rows, separator, timestamp_column, number_chars_timestamp, inseconds, action_column, trace_column):
@@ -56,6 +58,7 @@ class CandidateController(QObject):
 
     @Slot(int, int)
     def candidateSelected(self, candidate_index, tab):
+        self.disablebuttons.emit()
         self.abstraction_controller.database.currenttab = tab
         print(f'tab: {tab}')
         print(f'User clicked on: {candidate_index}')
@@ -77,7 +80,31 @@ class CandidateController(QObject):
         )
 
     @Slot(int, int)
+    def candidateSelectedPattern(self, candidate_index, tab):
+        self.disablebuttons.emit()
+        self.abstraction_controller.database.currenttab = tab
+        print(f'tab: {tab}')
+        print(f'User clicked on: {candidate_index}')
+        self.abstraction_controller.set_pair_we_are_at(candidate_index)
+        self.thread = QThread()
+
+        self.worker = PatternAbstractionWorker(self.abstraction_controller)
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run)
+
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.thread.start()
+
+        self.worker.finished.connect(
+
+            lambda: self.updater()
+        )
+
+    @Slot(int, int)
     def delete_rep_event(self, action_index, tab):
+        self.disablebuttons.emit()
         self.abstraction_controller.database.currenttab = tab
         print(f'tab: {tab}')
         print(f'User clicked on: {action_index}')
@@ -97,14 +124,59 @@ class CandidateController(QObject):
             lambda: self.updater()
         )
 
+    @Slot(int, int, int)
+    def delete_rep_event_time(self, action_index, tab, seconds):
+        self.disablebuttons.emit()
+        self.abstraction_controller.database.currenttab = tab
+        print(f'tab: {tab}')
+        print(f'User clicked on: {action_index}')
+        self.thread = QThread()
+
+        self.worker = DelRepEventTimeWorker(self.abstraction_controller, action_index, seconds)
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run)
+
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.thread.start()
+
+        self.worker.finished.connect(
+
+            lambda: self.updater()
+        )
+
     @Slot(int)
     def delete_all_rep(self, tab):
+        self.disablebuttons.emit()
         self.abstraction_controller.database.currenttab = tab
         print(f'tab: {tab}')
         print(f'User clicked on: Delete all rep')
         self.thread = QThread()
 
         self.worker = DelAllRepWorker(self.abstraction_controller)
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run)
+
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.thread.start()
+
+        self.worker.finished.connect(
+
+            lambda: self.updater()
+        )
+
+    @Slot(int, int)
+    def delete_all_rep_time(self, tab, seconds):
+        self.disablebuttons.emit()
+        self.abstraction_controller.database.currenttab = tab
+        print(f'tab: {tab}')
+        print(f'User clicked on: Delete all rep time')
+        self.thread = QThread()
+
+        self.worker = DelAllRepWorkerTime(self.abstraction_controller, seconds)
         self.worker.moveToThread(self.thread)
         self.thread.started.connect(self.worker.run)
 
