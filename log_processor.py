@@ -93,17 +93,18 @@ class LogProcessor:
                 event = rawdata_values[row, :]
                 # print(event[self.action_column])
                 # print(row)
-                if len(last_event) > 0 and last_event[self.action_column] == event[self.action_column] and event[self.action_column] == event_to_delete:
-                    #print(last_event[self.action_column] + " " + event[self.action_column])
-                    average_time = np.append(
-                        average_time, last_event[self.timestamp_column])
-                    ids_to_delete.append(last_row)
+                if event[self.action_column] == event_to_delete:
+                    if len(last_event) > 0 and last_event[self.action_column] == event[self.action_column]:
+                        #print(last_event[self.action_column] + " " + event[self.action_column])
+                        average_time = np.append(
+                            average_time, last_event[self.timestamp_column])
+                        ids_to_delete.append(last_row)
 
-                if len(average_time) > 0 and last_event[self.action_column] != event[self.action_column]:
-                    # Maybe keep track also of the other proprieties, not only time
-                    self.database.change_event(
-                        last_row, self.database.get_timestamp_column(), average_time.mean())
-                    average_time = np.array([])
+                    if len(average_time) > 0 and last_event[self.action_column] != event[self.action_column]:
+                        # Maybe keep track also of the other proprieties, not only time
+                        self.database.change_event(
+                            last_row, self.database.get_timestamp_column(), average_time.mean())
+                        average_time = np.array([])
                 last_event = event
                 last_row = row
                 #print("Ids to delete")
