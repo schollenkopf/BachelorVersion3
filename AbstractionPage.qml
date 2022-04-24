@@ -458,22 +458,19 @@ Window{
                                     delegate: Item {
                                         width: list_single_actions.width; height: 40
 
-                                        Column{
+                                        
+                                        Text {
 
                                             anchors.fill: parent
-                                            Text {
-
-                                                anchors.left: parent.left
-                                                anchors.right: parent.right
-                                                anchors.verticalCenter: parent.verticalCenter
-                                                anchors.horizontalCenter: parent.horizontalCenter
-                                                text: something
-                                                color: JS.textColor
-                                                font.pixelSize: 10
-
-                                            }
+                                            anchors.verticalCenter: parent.verticalCenter
+                                            anchors.horizontalCenter: parent.horizontalCenter
+                                            text: something
+                                            color: JS.textColor
+                                            font.pixelSize: 10
 
                                         }
+
+                                        
 
 
                                         MouseArea {
