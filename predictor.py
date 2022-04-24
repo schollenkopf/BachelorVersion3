@@ -37,11 +37,12 @@ class Predictor:
         weight_of_each_metric = np.zeros(
             (len(self.metrics), len(self.database.get_actions()), len(self.database.get_actions())))
         for m, metric in enumerate(self.metrics):
-            print("calculatin:" + metric.get_name())
-            current_metric = metric.get_metric()
-                
-            weighted_sum += self.hyperparameters[metric.get_name()] * current_metric
-            weight_of_each_metric[m] = current_metric
+            if self.hyperparameters[metric.get_name()] != 0:
+                print("calculatin:" + metric.get_name())
+                current_metric = metric.get_metric()
+                    
+                weighted_sum += self.hyperparameters[metric.get_name()] * current_metric
+                weight_of_each_metric[m] = current_metric
         self.weight_of_each_metric = weight_of_each_metric
 
         self.weighted_result = weighted_sum

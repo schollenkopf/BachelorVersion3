@@ -20,10 +20,12 @@ class TimeDistanceStdev(TimeDistance):
         all_times = self.get_time_between_events()
         actions = self.database.get_actions()
         stdevs = np.zeros((len(actions), len(actions)))
+        print("Start")
         for a1 in range(len(actions)):
             for a2 in range(len(actions)):
                 
                 if len(all_times[a1][a2]) > 1:
                     stdevs[a1, a2] = stat.stdev(all_times[a1][a2]) 
                 else: stdevs[a1, a2] = np.inf
+        print("End")
         return stdevs  / (self.max(stdevs) - np.min(stdevs))
