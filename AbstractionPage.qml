@@ -465,6 +465,8 @@ Window{
 
                                                 anchors.left: parent.left
                                                 anchors.right: parent.right
+                                                anchors.verticalCenter: parent.verticalCenter
+                                                anchors.horizontalCenter: parent.horizontalCenter
                                                 text: something
                                                 color: JS.textColor
                                                 font.pixelSize: 10
@@ -545,7 +547,15 @@ Window{
                                                 Text{
                                                     anchors.centerIn: parent
                                                     text: "ONE EVENT \n OPERATORS"
-                                                    color: JS.textColor
+                                                    color: if (one_event_row.visible == 1){
+                                                        JS.selected
+                                                    }
+                                                    else if (one_event_action.hovered)
+                                                    {
+                                                        JS.iconhovered
+                                                    }else {
+                                                        JS.icon
+                                                    }
                                                     font.pixelSize: 10
                                                 }
                                             }
@@ -574,7 +584,15 @@ Window{
                                                 Text{
                                                     anchors.centerIn: parent
                                                     text: "TWO EVENTS \n OPERATORS"
-                                                    color: JS.textColor
+                                                    color: if (two_event_row.visible == 1){
+                                                        JS.selected
+                                                    }
+                                                    else if (two_event_action.hovered)
+                                                    {
+                                                        JS.iconhovered
+                                                    }else {
+                                                        JS.icon
+                                                    }
                                                     font.pixelSize: 10
                                                 }
                                             }
@@ -601,7 +619,15 @@ Window{
                                                 Text{
                                                     anchors.centerIn: parent
                                                     text: "ALL EVENTS \n OPERATORS"
-                                                    color: JS.textColor
+                                                    color: if (all_events_row.visible == 1){
+                                                        JS.selected
+                                                    }
+                                                    else if (all_event_action.hovered)
+                                                    {
+                                                        JS.iconhovered
+                                                    }else {
+                                                        JS.icon
+                                                    }
                                                     font.pixelSize: 10
                                                 }
                                             }

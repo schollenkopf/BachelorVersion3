@@ -2,7 +2,13 @@ from pm4py.objects.conversion.log import converter as log_converter
 from pm4py.algo.discovery.heuristics import algorithm as heuristics_miner
 from pm4py.visualization.heuristics_net import visualizer as hn_visualizer
 from pm4py.util import constants
+import our_variant
+from enum import Enum
 from pathlib import Path
+
+
+class Variants(Enum):
+    OURVARIANT = our_variant
 
 
 class HeuristicMiner():
@@ -23,7 +29,7 @@ class HeuristicMiner():
         event_log = log_converter.apply(
             self.database.get_latest_log(), parameters=parameters, variant=log_converter.Variants.TO_EVENT_LOG)
         heu_net = heuristics_miner.apply_heu(event_log, parameters=parameters)
-        gviz = hn_visualizer.apply(heu_net)
+        gviz = hn_visualizer.apply(heu_net, variant=Variants.OURVARIANT)
         path_file = Path(__file__).parent / \
             f"tab{self.database.currenttab}/abstractions_process_models/Abstraction{str(level_of_abstraction)}.png"
         hn_visualizer.save(gviz, path_file)
