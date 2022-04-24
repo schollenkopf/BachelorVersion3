@@ -663,7 +663,13 @@ Window{
                                                 Text{
                                                     anchors.centerIn: parent
                                                     text: "MERGE"
-                                                    color: JS.textColor
+                                                    color: if (mergeButton.hovered)
+                                                    {
+                                                        JS.iconhovered
+                                                    }else {
+                                                        JS.icon
+                                                    }
+                                                    
                                                     font.pixelSize: 10
                                                 }
                                             }
@@ -691,7 +697,12 @@ Window{
                                                 Text{
                                                     anchors.centerIn: parent
                                                     text: "MERGE PATTERN"
-                                                    color: JS.textColor
+                                                    color: if (mergeButtonPattern.hovered)
+                                                    {
+                                                        JS.iconhovered
+                                                    }else {
+                                                        JS.icon
+                                                    }
                                                     font.pixelSize: 10
                                                 }
                                             }
@@ -729,7 +740,12 @@ Window{
                                                 Text{
                                                     anchors.centerIn: parent
                                                     text: "DELETE REP."
-                                                    color: JS.textColor
+                                                    color: if (deleteRepetitions.hovered)
+                                                    {
+                                                        JS.iconhovered
+                                                    }else {
+                                                        JS.icon
+                                                    }
                                                     font.pixelSize: 10
                                                 }
                                             }
@@ -764,11 +780,15 @@ Window{
                                                     color: JS.button
                                                     
                                                     Text{
-                                                        anchors.top: parent.top
-                                                        anchors.bottom: parent.bottom
+                                                        anchors.centerIn: parent
                                                         width: parent.width * 0.5
                                                         text: "DELETE REP."
-                                                        color: JS.textColor
+                                                        color: if (deleteRepetitionsTime.hovered)
+                                                        {
+                                                            JS.iconhovered
+                                                        }else {
+                                                            JS.icon
+                                                        }
                                                         font.pixelSize: 10
                                                     }
 
@@ -788,6 +808,7 @@ Window{
                                                     top: parent.top
                                                     bottom: parent.bottom
                                                 }
+                                                anchors.topMargin: 10
                                                 width: 0.5 * parent.width
                                                 validator: IntValidator{bottom: 0;}
                                                 focus: true
@@ -825,7 +846,12 @@ Window{
                                                 Text{
                                                     anchors.centerIn: parent
                                                     text: "DELETE ALL REP."
-                                                    color: JS.textColor
+                                                    color: if (deleteAllRepetitions.hovered)
+                                                    {
+                                                        JS.iconhovered
+                                                    }else {
+                                                        JS.icon
+                                                    }
                                                     font.pixelSize: 10
                                                 }
                                             }
@@ -860,7 +886,12 @@ Window{
                                                     Text{
                                                         anchors.centerIn: parent
                                                         text: "DELETE ALL REP."
-                                                        color: JS.textColor
+                                                        color: if (deleteAllRepetitionsTime.hovered)
+                                                        {
+                                                            JS.iconhovered
+                                                        }else {
+                                                            JS.icon
+                                                        }
                                                         font.pixelSize: 10
                                                     }
                                                 }
@@ -877,6 +908,7 @@ Window{
                                                     top: parent.top
                                                     bottom: parent.bottom
                                                 }
+                                                anchors.topMargin: 10
                                                 width: 0.5 * parent.width
                                                 validator: IntValidator{bottom: 0;}
                                                 focus: true

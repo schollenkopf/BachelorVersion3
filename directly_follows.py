@@ -8,7 +8,7 @@ class DirectlyFollowsMetric(Metric):
         self.order_matters = order_matters
 
     def get_name(self) -> str:
-        return f"DirecltyFollowsOrder={self.order_matters}"
+        return f"DirFolOrder={self.order_matters}"
 
     def get_nikname(self) -> str:
         if self.order_matters:
