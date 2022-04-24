@@ -74,7 +74,7 @@ class PointManager(QObject):
         item.setData(text, XLabelTextRole)
         item.setData(x, XLabelXRole)
         self._x_label.appendRow(item)
-        print(text, x)
+
 
     def filter_data_by_trace(self, trace):
         rawdata = self.data
@@ -156,18 +156,21 @@ class PointManager(QObject):
                     y = height + margin_top - n * (height/(len(items_y) - 1))
                     self.add_y_label(string_label, round(y - 5))
         else:
-            
             y_label_number = max_y-min_y
             label = ""
-            for n in range(math.floor(height/15)):
+            last_label_y = height + 15
+            for n in range(height,0,-1):
+                if last_label_y - n >= 15 and n > 15:
 
-                y = height + margin_top - n * \
-                    (height/(math.floor(height/15) - 1))
-                if (label != str(round(min_y + n * (y_label_number/math.floor(height/15))))):
-                    label = str(
-                        round(min_y + n * (y_label_number/math.floor(height/15))))
+                    if (label != str(math.floor(min_y + (height - n) * (y_label_number/height)))):
+                        label = str(math.floor(
+                            min_y + (height - n) * (y_label_number/height)))
+                        if n == 0:
+                            label = str(round(min_y))
+                        self.add_y_label(label, n + margin_top)
+                        last_label_y = n
 
-                    self.add_y_label(label, round(y - 5))
+            self.add_y_label(str(round(max_y)), 0 + margin_top)
 
         if not number_x:
             items_x = self.data[x_column].unique()
@@ -187,16 +190,22 @@ class PointManager(QObject):
                 else:
                     x = n * (width/(len(items_x) - 1))
                     self.add_x_label(string_label, round(x))
-        else: 
+        else:
             x_label_number = max_x-min_x
             label = ""
-            for n in range(math.floor(height/15)):
+            last_label_x = -15
+            for n in range(width):
+                if n - last_label_x >= 15 and n < width - 15:
 
-                x = n * (height/(math.floor(height/15) - 1))
-                if (label != str(round(min_x + n * (x_label_number/math.floor(height/15))))):
-                    label = str(round(min_x + n * (x_label_number/math.floor(height/15))))
+                    if (label != str(math.floor(min_x + n * (x_label_number/width)))):
+                        label = str(math.floor(
+                            min_x + n * (x_label_number/width)))
+                        if n == 0:
+                            label = str(round(min_x))
+                        self.add_x_label(label, n)
+                        last_label_x = n
 
-                    self.add_x_label(label, round(x))
+            self.add_x_label(str(round(max_x)), width)
 
         # if not x_discrete and not y_discrete:
         for n, event in enumerate(self.data.values):
@@ -308,4 +317,5 @@ class PointManager(QObject):
         data[self.data.columns[self.candidate_controller.abstraction_controller.timestamp_column]
              ] = self.original_timestamp_column
         self.candidate_controller.abstraction_controller.setUp(data)
-        self.initTable.emit(self.candidate_controller.abstraction_controller.number_columns, self.candidate_controller.abstraction_controller.number_rows)
+        self.initTable.emit(self.candidate_controller.abstraction_controller.number_columns,
+                            self.candidate_controller.abstraction_controller.number_rows)
