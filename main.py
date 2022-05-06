@@ -8,7 +8,7 @@ from PySide6.QtQml import QQmlApplicationEngine, QQmlComponent, qmlRegisterType
 from cluster_list_model import ClusterListModel
 from display_datalog import DataFrameModel
 from candidate_list_model import CandidateListModel
-from candidates_controller import CandidateController
+from candidates_controller import ThreadController
 from point_manager import PointManager
 
 from metrics_list_model import MetricsListModel
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     actions_list_model = ActionListModel()
     candidate_list_model = CandidateListModel()
     metrics_list_model = MetricsListModel()
-    candidate_controller = CandidateController()
+    candidate_controller = ThreadController()
     cluster_list_model = ClusterListModel()
     display_datalog = DataFrameModel()
     point_manager = PointManager(candidate_controller)
