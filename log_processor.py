@@ -23,18 +23,26 @@ class LogProcessor:
         nr_events_abstracted = 0
         database = self.database.get_latest_log().values
         ids_to_delete = []
-        previous = database[0][self.action_column]
-        print(previous)
-        for n, event in enumerate(database):
-            if n > 0:
-                if previous == set_of_actions1 and event[self.action_column] == set_of_actions2:
-                    nr_events_abstracted += 1
-                    ids_to_delete.append(n - 1)
-                    self.database.change_event(n, self.database.get_action_column(), newname)
-            previous = event[self.action_column]
+        rawdata = self.database.get_latest_log()
+        rawdata_values = rawdata.values
+        
+        for trace in self.database.get_traces():
+            previous = []
+            previous_n = 0
+            isFirst = True
+            for n in self.filter_data_by_trace(trace):
+                event = rawdata_values[n, :]
+                if not isFirst:
+                    if previous[self.action_column] == set_of_actions1 and event[self.action_column] == set_of_actions2:
+                        nr_events_abstracted += 1
+                        ids_to_delete.append(previous_n)
+                        self.database.change_event(n, self.database.get_action_column(), newname)
+                        self.database.change_event(n, self.database.get_timestamp_column(), previous[self.timestamp_column])
+                isFirst = False
+                previous = event
+                previous_n = n
         self.database.delete_events(ids_to_delete)
-        print(f"I DELETED {len(ids_to_delete)}")
-        print(f"I ABSTRACTED {nr_events_abstracted}")
+        
         return nr_events_abstracted
 
     def filter_data_by_trace(self, trace):
@@ -134,7 +142,6 @@ class LogProcessor:
                     ids_to_delete.append(row)
                 else:
                     last_events[event[self.action_column]] = event[self.timestamp_column]
-
         self.database.delete_events(ids_to_delete)
 
     def delete_repetitions_event_time(self, event_to_delete, time_seconds):

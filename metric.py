@@ -6,7 +6,7 @@ class Metric:
         pass
 
     def get_name(self) -> str:
-        pass
+        return "NAME not DEFIEND"
 
     def get_nikname(self) -> str:
         return "NICKNAME not DEFIEND"
