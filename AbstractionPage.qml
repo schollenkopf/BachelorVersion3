@@ -846,7 +846,7 @@ Window{
                                                 color: JS.button
                                                 Text{
                                                     anchors.centerIn: parent
-                                                    text: "MINIMIZE ALL REP."
+                                                    text: "MINIMIZE REP."
                                                     color: if (deleteAllRepetitions.hovered)
                                                     {
                                                         JS.iconhovered
@@ -886,7 +886,7 @@ Window{
                                                     color: JS.button
                                                     Text{
                                                         anchors.centerIn: parent
-                                                        text: "MINIMIZE ALL REP."
+                                                        text: "MINIMIZE REP."
                                                         color: if (deleteAllRepetitionsTime.hovered)
                                                         {
                                                             JS.iconhovered
