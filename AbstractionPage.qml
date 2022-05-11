@@ -544,7 +544,7 @@ Window{
                                                 color: JS.button
                                                 Text{
                                                     anchors.centerIn: parent
-                                                    text: "ONE EVENT \n OPERATORS"
+                                                    text: "UNARY \n OPERATORS"
                                                     color: if (one_event_row.visible == 1){
                                                         JS.selected
                                                     }
@@ -581,7 +581,7 @@ Window{
                                                 color: JS.button
                                                 Text{
                                                     anchors.centerIn: parent
-                                                    text: "TWO EVENTS \n OPERATORS"
+                                                    text: "BINARY \n OPERATORS"
                                                     color: if (two_event_row.visible == 1){
                                                         JS.selected
                                                     }
@@ -616,7 +616,7 @@ Window{
                                                 color: JS.button
                                                 Text{
                                                     anchors.centerIn: parent
-                                                    text: "ALL EVENTS \n OPERATORS"
+                                                    text: "GLOBAL \n OPERATORS"
                                                     color: if (all_events_row.visible == 1){
                                                         JS.selected
                                                     }
@@ -697,7 +697,7 @@ Window{
                                                 color: JS.button
                                                 Text{
                                                     anchors.centerIn: parent
-                                                    text: "MERGE PATTERN"
+                                                    text: "MATCH PATTERN"
                                                     color: if (mergeButtonPattern.hovered)
                                                     {
                                                         JS.iconhovered
@@ -740,7 +740,7 @@ Window{
                                                 color: JS.button
                                                 Text{
                                                     anchors.centerIn: parent
-                                                    text: "DELETE REP."
+                                                    text: "MINIMIZE REP."
                                                     color: if (deleteRepetitions.hovered)
                                                     {
                                                         JS.iconhovered
@@ -783,7 +783,7 @@ Window{
                                                     Text{
                                                         anchors.centerIn: parent
                                                         width: parent.width * 0.5
-                                                        text: "DELETE REP."
+                                                        text: "MINIMIZE REP."
                                                         color: if (deleteRepetitionsTime.hovered)
                                                         {
                                                             JS.iconhovered
@@ -846,7 +846,7 @@ Window{
                                                 color: JS.button
                                                 Text{
                                                     anchors.centerIn: parent
-                                                    text: "DELETE ALL REP."
+                                                    text: "MINIMIZE ALL REP."
                                                     color: if (deleteAllRepetitions.hovered)
                                                     {
                                                         JS.iconhovered
@@ -886,7 +886,7 @@ Window{
                                                     color: JS.button
                                                     Text{
                                                         anchors.centerIn: parent
-                                                        text: "DELETE ALL REP."
+                                                        text: "MINIMIZE ALL REP."
                                                         color: if (deleteAllRepetitionsTime.hovered)
                                                         {
                                                             JS.iconhovered
