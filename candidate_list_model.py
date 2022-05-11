@@ -6,6 +6,8 @@ QML_IMPORT_NAME = "CandidateListModel"
 QML_IMPORT_MAJOR_VERSION = 1
 
 @QmlElement"""
+
+
 class CandidateListModel(QAbstractListModel):
 
     MetricsRole = Qt.UserRole + 1
@@ -23,12 +25,16 @@ class CandidateListModel(QAbstractListModel):
     def rowCount(self, parent=QModelIndex()):
         return len(self.db)
 
+    @Slot(int)
+    def print_clicked(self, index):
+        print(self.db[index]["text"])
+
     def data(self, index, role):
         if not self.db:
             ret = None
         elif not index.isValid():
             ret = None
-        elif role ==  Qt.DisplayRole:
+        elif role == Qt.DisplayRole:
             ret = self.db[index.row()]["text"]
         elif role == CandidateListModel.MetricsRole:
             ret = self.db[index.row()]["metrics"]
@@ -45,7 +51,7 @@ class CandidateListModel(QAbstractListModel):
 
     @Slot(int, int, list, result=bool)
     def insertRows(self, row: int, count, new_candidates, index=QModelIndex()):
-        #Insert n rows (n = 1 + count)  at row
+        # Insert n rows (n = 1 + count)  at row
 
         self.beginInsertRows(QModelIndex(), row, row + count)
 
@@ -60,11 +66,7 @@ class CandidateListModel(QAbstractListModel):
 
     @Slot(int, int, result=bool)
     def removeRows(self, row: int, count, index=QModelIndex()):
-         self.beginRemoveRows(QModelIndex(), row, count)
-         self.db = self.db[:row] + self.db[row + count + 1 :]
-         self.endRemoveRows()
-         return True
-
-
-
-
+        self.beginRemoveRows(QModelIndex(), row, count)
+        self.db = self.db[:row] + self.db[row + count + 1:]
+        self.endRemoveRows()
+        return True

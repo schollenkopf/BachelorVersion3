@@ -29,7 +29,7 @@ class Database:
     def init_abstraction_tree_string(self):
         initial_string = ""
         for action in self.get_actions():
-            
+
             action = self.fix_string(action)
             initial_string = initial_string + action + \
                 "[color = white; fontcolor = white];"
@@ -102,32 +102,35 @@ class Database:
         self.generate_tree()
 
     def fix_string(self, action):
-        action = action.replace("\\", "_") 
-        action = action.replace("(", "__") 
-        action = action.replace(")", "__") 
-        action = action.replace("-", "_") 
-        action = action.replace("/", "_") 
-        action = action.replace("[", "_") 
-        action = action.replace("]", "_") 
-        action = action.replace("{", "_") 
-        action = action.replace("}", "_") 
-        action = action.replace(";", "_") 
+        action = action.replace("\\", "_")
+        action = action.replace("(", "__")
+        action = action.replace(")", "__")
+        action = action.replace("-", "_")
+        action = action.replace("/", "_")
+        action = action.replace("[", "_")
+        action = action.replace("]", "_")
+        action = action.replace("{", "_")
+        action = action.replace("}", "_")
+        action = action.replace(";", "_")
         action = action.replace(",", "_")
+        action = action.replace(" ", "_")
+        action = action.replace("&", "_")
         return action
-
 
     def build_abstraction_tree(self, e1, e2, level_of_abstraction):
         print("fixing e1 and e2")
-        
+
         e1 = self.fix_string(e1)
         e2 = self.fix_string(e2)
         print("new_e1: " + e1)
         self.abstraction_tree_string[self.currenttab] = self.abstraction_tree_string[self.currenttab] + \
             e1 + e2 + "[color = white; fontcolor = white];"
         self.abstraction_tree_string[self.currenttab] = self.abstraction_tree_string[self.currenttab] + e1 + "->" + e1 + e2 + \
-            "[label = " + str(level_of_abstraction) + ";color = white;fontcolor = white]" + ";"
+            "[label = " + str(level_of_abstraction) + \
+            ";color = white;fontcolor = white]" + ";"
         self.abstraction_tree_string[self.currenttab] = self.abstraction_tree_string[self.currenttab] + e2 + "->" + e1 + e2 + \
-            "[label = " + str(level_of_abstraction) + ";color = white;fontcolor = white]" + ";"
+            "[label = " + str(level_of_abstraction) + \
+            ";color = white;fontcolor = white]" + ";"
 
     def generate_tree(self):
         name = f"abstraction_tree{self.level_of_abstraction[self.currenttab]}"

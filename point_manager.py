@@ -75,7 +75,6 @@ class PointManager(QObject):
         item.setData(x, XLabelXRole)
         self._x_label.appendRow(item)
 
-
     def filter_data_by_trace(self, trace):
         rawdata = self.data
         array_of_rows = np.array([], dtype=np.int32)
@@ -140,6 +139,8 @@ class PointManager(QObject):
 
         if not number_y:
             items_y = self.data[y_column].unique()
+            items_y.sort()
+            print(items_y)
             y_label_number = len(items_y)
             select_y = y_label_number > height / 15
             skip = math.ceil((y_label_number * 15) / height)
@@ -159,7 +160,7 @@ class PointManager(QObject):
             y_label_number = max_y-min_y
             label = ""
             last_label_y = height + 15
-            for n in range(height,0,-1):
+            for n in range(height, 0, -1):
                 if last_label_y - n >= 15 and n > 15:
 
                     if (label != str(math.floor(min_y + (height - n) * (y_label_number/height)))):

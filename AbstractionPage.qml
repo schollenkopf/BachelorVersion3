@@ -413,7 +413,7 @@ Window{
                                                 text: metricsrole
                                                 color: JS.textColor
                                                 font.pixelSize: 10
-
+                                                
                                             }
                                         }
 
@@ -423,6 +423,7 @@ Window{
                                             anchors.fill: parent
                                             onClicked: {
                                                 list.currentIndex = index
+                                                candidate_list_model.print_clicked(index)
                                             }
                                         }
 
