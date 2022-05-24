@@ -6,4 +6,4 @@ The only extra thing that you might need to install is graphviz.
 
 RUN THE PROGRAM
 You can at this point run the _main.py_ file.
-The default values in the import page correspond to the values needed to open the 
+The default values in the import page correspond to the values needed to open the _Data.csv_ file.
