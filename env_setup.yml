@@ -1,10 +1,22 @@
-name: bp2
+name: bp
 channels:
   - defaults
 dependencies:
+  - ca-certificates=2022.3.18=haa95532_0
+  - certifi=2021.10.8=py38haa95532_2
+  - openssl=1.1.1n=h2bbff1b_0
+  - pip=21.2.2=py38haa95532_0
+  - python=3.8.12=h6244533_0
+  - setuptools=58.0.4=py38haa95532_0
+  - sqlite=3.38.0=h2bbff1b_0
+  - vc=14.2=h21ff451_1
+  - vs2015_runtime=14.27.29016=h5e58377_2
+  - wheel=0.37.1=pyhd3eb1b0_0
+  - wincertstore=0.2=py38haa95532_2
   - pip:
     - asttokens==2.0.5
     - backcall==0.2.0
+    - coverage==6.3.2
     - cvxopt==1.3.0
     - cycler==0.11.0
     - decorator==5.1.1
@@ -41,7 +53,7 @@ dependencies:
     - pyqt6-sip==13.2.1
     - pyside6==6.2.4
     - python-dateutil==2.8.2
-    #- python-graphviz==0.19.1
+    - python-graphviz==0.19.1
     - pytz==2022.1
     - pyvis==0.1.9
     - scipy==1.8.0
@@ -54,4 +66,3 @@ dependencies:
     - tqdm==4.63.1
     - traitlets==5.1.1
     - wcwidth==0.2.5
-
